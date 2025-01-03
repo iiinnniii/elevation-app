@@ -1,6 +1,6 @@
 # Elevation App
 
-## Bootstrap
+## Project Setup Notes
 
 This project was created via `npm create vite@latest . -- --template react-ts`
 
@@ -22,9 +22,9 @@ if Git is already installed.
 
 ## Dependencies
 
-There's no need to install these dependencies when you're working within the Dev Container.
+There's no need to install the following dependencies when working within the Dev Container. All you need is Docker Desktop.
 
-If you already have these dependencies installed, you can start using the app without the Dev Container. Otherwise, it is highly recommended to use the Dev Container.
+If you already have the following dependencies installed, then you can start using the App without the Dev Container. However, it is highly recommended to use the Dev Container for various reasons, such as isolation, cross-platform compatibility, and serving as a source of trust in case of conflicts.
 
 ```
 $ node --version
@@ -34,11 +34,30 @@ $ npm --version
 10.9.0
 ```
 
-## Initial setup
+## Prerequisites
 
-### Dev Container
+### When using Dev Containers
 
-### On Windows
+#### All operating systems
+
+The following steps are optional, but necessary if you want to perform GPG-signed commits and enable HTTPS traffic.
+
+1. Create the following Docker named volumes within Docker
+
+```
+docker volume create gpg_files
+docker volume create ca_certificates
+```
+
+2. Copy `rootCA.crt` into the `ca_certificates` Docker volume to enable encrypted communication (HTTPS) with GitLab (e.g., for performing a `git push`). The path to the `ca_certificates` on Windows is `\\wsl.localhost\docker-desktop-data\data\docker\volumes\ca_certificates\_data`.
+
+3. Copy your `gpg` key into your local `WSL 2` instance and import it into `gpg`. Then, copy the `~/.gnupg` folder from this `WSL 2` instance into the `gpg_files` Docker volume. The path to the `gpg_files` on Windows is `\\wsl.localhost\docker-desktop-data\data\docker\volumes\gpg_files\_data`. This is required to perform signed commits within the Dev Container, as there is currently no better bug-free method.
+
+The `postStartCommand` within `.devcontainer/devcontainer.json` handles the remaining setup to ensure everything works smoothly.
+
+Please also review and follow the OS-specific requirements below.
+
+#### Windows
 
 If you are using Windows, it's strongly recommended to start the Dev Container within a WSL 2 distro. This avoids performance problems in general and hot reloading issues with cypress when using Dev Containers on Windows.
 
@@ -63,20 +82,9 @@ sudo rm -rf ~/playground/data-science-service-gmbh/elevation-app/node_modules
 code ~/playground/data-science-service-gmbh/elevation-app
 ```
 
-### General
+## Launch Instructions
 
-1. Create the following volumes
-
-```
-docker volume create gpg_files
-docker volume create ca_certificates
-```
-
-2. Copy `rootCA.crt` into `\\wsl.localhost\docker-desktop-data\data\docker\volumes\ca_certificates\_data` in order to be able to communicate with Gitlab (for example to perform a `git push`).
-
-3. Import your gpg key into your local `wsl` instance and then copy the `.gnupg` folder from this wsl instance into `\\wsl.localhost\docker-desktop-data\data\docker\volumes\gpg_files\_data`. This is required in order to perform signed commits within the Dev Container, also see `C:\Home\documentation\vscode\dev-container.txt` in regards to what the `gpg_files` volume is for.
-
-## Start via Dev Container (highly recommended)
+### Start via Dev Container (highly recommended)
 
 1. Open Visual Studio Code
 2. Start the Dev Container
@@ -86,7 +94,7 @@ Ctrl + P
 > Dev Containers: Rebuild and Reopen in Container
 ```
 
-## Start via Docker
+### Start via Docker
 
 ```
 docker build .
@@ -97,3 +105,9 @@ npm run dev -- --host
 ## Cypress
 
 Hot loading is only supported in WSL2 on Windows.
+
+## Legal disclaimer
+
+Please note that I do not take any responsibility for any damage caused by executing these instructions or any code provided here. You are solely responsible for any potential damage. By executing anything from here, you agree to these terms.
+
+Additionally, there is no license attached to this project, which means I hold full copyright as the sole contributor.
