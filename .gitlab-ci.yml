@@ -1,0 +1,92 @@
+stages:
+  - install
+  - type-check
+  - lint
+  - test
+  - build
+  - e2e
+  - package
+
+default:
+  image: node:lts
+  before_script:
+    - npm install
+
+install-job:
+  stage: install
+  tags:
+    - build-ubuntu
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules
+    policy: pull-push
+  script:
+    - npm install
+
+type-check-job:
+  stage: type-check
+  tags:
+    - build-ubuntu
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules
+    policy: pull
+  script:
+    - npm run type-check
+
+eslint-job:
+  stage: lint
+  tags:
+    - build-ubuntu
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules
+    policy: pull
+  script:
+    - npm run lint
+
+build-job:
+  stage: build
+  tags:
+    - build-ubuntu
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules
+    policy: pull
+  script:
+    - npm run build
+
+e2e-test-job:
+  stage: e2e
+  tags:
+    - build-ubuntu
+  cache:
+    key:
+      files:
+        - package-lock.json
+    paths:
+      - node_modules
+    policy: pull
+  script:
+    - npm run ci
+
+package-job:
+  stage: package
+  tags:
+    - build-ubuntu
+  script:
+    - echo "Packging started..."
+    - sleep 1
+    - echo "Packging finished"
