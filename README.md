@@ -109,5 +109,3 @@ Hot loading is only supported in WSL2 on Windows.
 ## Legal disclaimer
 
 Please note that I do not take any responsibility for any damage caused by executing these instructions or any code provided here. You are solely responsible for any potential damage. By executing anything from here, you agree to these terms.
-
-Additionally, there is no license attached to this project, which means I hold full copyright as the sole contributor.
