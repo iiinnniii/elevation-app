@@ -1,4 +1,4 @@
-# Lightning Bot frontend
+# Elevation App
 
 ## Bootstrap
 
