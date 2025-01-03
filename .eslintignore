@@ -1,0 +1,10 @@
+!.vscode
+node_modules
+package-lock.json
+dist
+src/types/generated/schema.d.ts
+Dockerfile
+README.md
+index.html
+*.svg
+*.css
