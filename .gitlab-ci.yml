@@ -69,29 +69,29 @@ build-docker-image-job:
     - docker info
     - docker build --target production -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} .
     - docker save -o elevation-app.tar ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
-#e2e-test-job:
-#  stage: e2e
-#  tags:
-#    - elevation-app
-#  image: docker:24.0.7
-#  variables:
-#    DOCKER_DRIVER: overlay2
-#    DOCKER_TLS_CERTDIR: '/certs'
-#  services:
-#    - docker:24.0.7-dind
-#  script:
-#    - docker load -i elevation-app.tar
-#    - docker image ls
-#    - rm elevation-app.tar
-#    - touch .env.e2e-test.ci
-#    - echo 'E2E=true' >> .env.e2e-test.ci
-#    - echo REMOTE_URL="elevation-app-server" >> .env.e2e-test.ci
-#    - cat .env.e2e-test.ci
-#    - docker build --target development -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e .
-#    - docker network create elevation-app-network
-#    - docker run -d --rm --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
-#    - docker run -t --rm --network=elevation-app-network ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e "npm" "run" "test"
-#
+
+e2e-test-job:
+  stage: e2e
+  tags:
+    - elevation-app
+  image: docker:24.0.7
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: '/certs'
+  services:
+    - docker:24.0.7-dind
+  script:
+    - docker load -i elevation-app.tar
+    - docker image ls
+    - rm elevation-app.tar
+    - touch .env.e2e-test.ci
+    - echo 'E2E=true' >> .env.e2e-test.ci
+    - echo REMOTE_URL="elevation-app-server" >> .env.e2e-test.ci
+    - cat .env.e2e-test.ci
+    - docker build --target development -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e .
+    - docker network create elevation-app-network
+    - docker run -d --rm --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
+    - docker run -t --rm --network=elevation-app-network ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e "npm" "run" "test"
 #push-docker-image-job:
 #  stage: push-docker-image
 #  tags:
