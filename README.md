@@ -132,7 +132,7 @@ Note: I did not test this steps, since I work within Dev Containers
 5. Run the E2E test via `npm run test`
 6. `docker stop <container-id>`
 
-#### Running the tests from within a Docker container against another Docker container with the App like in CI/CD
+#### Executing tests from one Docker container against an application running in another Docker container, similar to a CI/CD pipeline.
 
 ##### With a docker network (development)
 
