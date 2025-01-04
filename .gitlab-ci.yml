@@ -10,7 +10,7 @@ stages:
 default:
   image: node:lts
   before_script:
-    - CYPRESS_CACHE_FOLDER=$CYPRESS_CACHE_FOLDER npm install
+    - npm install
 
 variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
@@ -25,9 +25,10 @@ install-job:
         - package-lock.json
     paths:
       - node_modules
+      - cache/Cypress
     policy: pull-push
   script:
-    - CYPRESS_CACHE_FOLDER=$CYPRESS_CACHE_FOLDER npm install
+    - npm install
 
 type-check-job:
   stage: type-check
@@ -39,6 +40,7 @@ type-check-job:
         - package-lock.json
     paths:
       - node_modules
+      - cache/Cypress
     policy: pull
   script:
     - npm run type-check
@@ -53,6 +55,7 @@ eslint-job:
         - package-lock.json
     paths:
       - node_modules
+      - cache/Cypress
     policy: pull
   script:
     - npm run lint
@@ -67,6 +70,7 @@ build-job:
         - package-lock.json
     paths:
       - node_modules
+      - cache/Cypress
     policy: pull
   script:
     - npm run build
@@ -81,9 +85,10 @@ e2e-test-job:
         - package-lock.json
     paths:
       - node_modules
+      - cache/Cypress
     policy: pull
   script:
-    - CYPRESS_CACHE_FOLDER=$CYPRESS_CACHE_FOLDER npm run ci
+    - npm run ci
 
 package-job:
   stage: package
