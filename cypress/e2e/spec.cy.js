@@ -1,11 +1,11 @@
 import dotenv from 'dotenv';
 
-console.log('process.cwd()', process.cwd());
+cy.task('log', process.cwd());
 
 dotenv.config({ path: './.env.e2e-test.local' });
 dotenv.config({ path: './.env.e2e-test.ci' });
 
-console.log('process.env.REMOTE_URL', process.env.REMOTE_URL);
+cy.task('log', process.env.REMOTE_URL);
 
 const remoteURL = `http://${process.env.REMOTE_URL}:5173/`; // "localhost" | "host.docker.internal" | "elevation-app-server"
 
