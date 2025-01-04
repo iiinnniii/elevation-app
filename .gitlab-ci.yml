@@ -15,7 +15,7 @@ default:
 install-job:
   stage: install
   tags:
-    - build-ubuntu
+    - elevation-app
   cache:
     key:
       files:
@@ -29,7 +29,7 @@ install-job:
 type-check-job:
   stage: type-check
   tags:
-    - build-ubuntu
+    - elevation-app
   cache:
     key:
       files:
@@ -43,7 +43,7 @@ type-check-job:
 eslint-job:
   stage: lint
   tags:
-    - build-ubuntu
+    - elevation-app
   cache:
     key:
       files:
@@ -57,7 +57,7 @@ eslint-job:
 build-job:
   stage: build
   tags:
-    - build-ubuntu
+    - elevation-app
   cache:
     key:
       files:
@@ -71,7 +71,7 @@ build-job:
 e2e-test-job:
   stage: e2e
   tags:
-    - build-ubuntu
+    - elevation-app
   cache:
     key:
       files:
@@ -85,7 +85,7 @@ e2e-test-job:
 package-job:
   stage: package
   tags:
-    - build-ubuntu
+    - elevation-app
   script:
     - echo "Packging started..."
     - sleep 1
