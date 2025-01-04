@@ -12,6 +12,9 @@ default:
   before_script:
     - npm install
 
+variables:
+  CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
+
 install-job:
   stage: install
   tags:
