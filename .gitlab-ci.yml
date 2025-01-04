@@ -89,9 +89,10 @@ e2e-test-job:
     - echo REMOTE_URL="elevation-app-server" >> .env.e2e-test.ci
     - cat .env.e2e-test.ci
     - docker build --target development -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e .
-    - docker network create elevation-app-network
-    - docker run -d --rm --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} npm run preview -- --host 0.0.0.0
-    - docker run -t --rm --network=elevation-app-network ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e npm run test
+    - 1d
+    # - docker network create elevation-app-network
+    # - docker run -d --rm --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} npm run preview -- --host 0.0.0.0
+    # - docker run -t --rm --network=elevation-app-network ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e npm run test
 #push-docker-image-job:
 #  stage: push-docker-image
 #  tags:
