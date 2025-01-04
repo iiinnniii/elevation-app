@@ -10,7 +10,7 @@ stages:
 default:
   image: node:lts
   before_script:
-    - npm install
+    - CYPRESS_CACHE_FOLDER=$CYPRESS_CACHE_FOLDER npm install
 
 variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
@@ -27,7 +27,7 @@ install-job:
       - node_modules
     policy: pull-push
   script:
-    - npm install
+    - CYPRESS_CACHE_FOLDER=$CYPRESS_CACHE_FOLDER npm install
 
 type-check-job:
   stage: type-check
@@ -83,7 +83,7 @@ e2e-test-job:
       - node_modules
     policy: pull
   script:
-    - npm run ci
+    - CYPRESS_CACHE_FOLDER=$CYPRESS_CACHE_FOLDER npm run ci
 
 package-job:
   stage: package
