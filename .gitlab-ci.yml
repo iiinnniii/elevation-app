@@ -8,10 +8,10 @@ stages:
   - package
 
 default:
-  image: node:lts
+  image: cypress/browsers
   before_script:
-    - apt-get update
-    - apt-get install -y xvfb
+    #- apt-get update
+    #- apt-get install -y xvfb
     - npm install
 
 variables:
