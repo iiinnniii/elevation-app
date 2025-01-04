@@ -1,6 +1,6 @@
 stages:
   - install
-  - type-check
+  - build
   - lint
   #- test
   - build-docker-image
@@ -32,15 +32,15 @@ install-job:
   script:
     - npm install
 
-type-check-job:
-  stage: type-check
+# Note: The build job also performs type-checking
+build-job:
+  stage: build
   tags:
     - elevation-app
   cache:
     <<: *node_modules-cache
-    policy: pull
   script:
-    - npm run type-check
+    - npm run build
 
 eslint-job:
   stage: lint
