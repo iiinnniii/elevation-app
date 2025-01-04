@@ -34,4 +34,13 @@ CMD ["/bin/bash"]
 FROM base AS build
 RUN npm run ci:build
 
-# I excluded the production code, because it is not necessary for this demo
+FROM node:22.12.0 AS production
+ENV NODE_ENV=production
+WORKDIR /usr/src/app
+COPY --from=build /usr/src/app/package.json .
+COPY --from=build /usr/src/app/package-lock.json .
+COPY --from=build /usr/src/app/build ./build
+RUN npm ci --omit=dev
+EXPOSE 5173
+RUN chown -R node .
+CMD ["npm", "run", "preview"]
