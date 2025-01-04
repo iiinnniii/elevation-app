@@ -16,6 +16,8 @@ RUN apt-get update && apt-get install -y \
 	libxtst6 \
 	xauth \
 	xvfb
+# Install ncessary packages for cypress headless
+RUN sudo apt install -y
 # Install Chrome
 RUN apt-get install -y wget
 RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
