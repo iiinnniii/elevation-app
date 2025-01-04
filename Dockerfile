@@ -43,4 +43,4 @@ COPY --from=build /usr/src/app/dist ./dist
 RUN npm ci --omit=dev
 EXPOSE 5173
 RUN chown -R node .
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0", "--port", "5173"]
+CMD ["npm", "run", "preview"]
