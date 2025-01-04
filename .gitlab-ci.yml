@@ -88,7 +88,8 @@ e2e-test-job:
       - cache/Cypress
     policy: pull
   script:
-    - npm run ci
+    - npm run dev &
+    - npm run test
 
 package-job:
   stage: package
