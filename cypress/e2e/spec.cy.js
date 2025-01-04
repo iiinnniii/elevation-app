@@ -1,7 +1,9 @@
 import dotenv from 'dotenv';
 
-dotenv.config({ path: '../../.env.e2e-test.local' });
-dotenv.config({ path: '../../.env.e2e-test.ci' });
+console.log('process.cwd()', process.cwd());
+
+dotenv.config({ path: './.env.e2e-test.local' });
+dotenv.config({ path: './.env.e2e-test.ci' });
 
 console.log('process.env.REMOTE_URL', process.env.REMOTE_URL);
 
