@@ -83,7 +83,6 @@ e2e-test-job:
       - node_modules
     policy: pull
   script:
-    - cypress install
     - npm run ci
 
 package-job:
