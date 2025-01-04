@@ -34,13 +34,8 @@ CMD ["/bin/bash"]
 FROM base AS build
 RUN npm run build
 
-FROM node:22.12.0 AS production
-ENV NODE_ENV=production
-WORKDIR /usr/src/app
-COPY --from=build /usr/src/app/package.json .
-COPY --from=build /usr/src/app/package-lock.json .
-COPY --from=build /usr/src/app/dist ./dist
-RUN npm ci --omit=dev
-EXPOSE 5173
-RUN chown -R node .
-CMD ["npm", "run", "preview"]
+FROM nginx AS production
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=build /usr/src/app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]

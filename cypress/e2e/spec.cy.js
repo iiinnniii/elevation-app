@@ -3,12 +3,14 @@
 // dotenv.config({ path: './.env.e2e-test.local' });
 // dotenv.config({ path: './.env.e2e-test.ci' });
 
-const remoteURL = `http://${Cypress.env('REMOTE_URL')}:5173/`; // "localhost" | "host.docker.internal" | "elevation-app-server"
+const remoteURL = `http://${Cypress.env('REMOTE_URL')}:${Cypress.env('PORT')}/`; // "localhost" | "host.docker.internal" | "elevation-app-server"
 
 describe('Map Click Elevation Test', function () {
 	beforeEach(function () {
 		cy.task('log', `process.cwd(): ${process.cwd()}`);
 		cy.task('log', `Cypress.env('REMOTE_URL'): ${Cypress.env('REMOTE_URL')}`);
+		cy.task('log', `Cypress.env('PORT'): ${Cypress.env('PORT')}`);
+		cy.task('log', `remoteURL: ${remoteURL}`);
 		cy.visit(remoteURL);
 	});
 

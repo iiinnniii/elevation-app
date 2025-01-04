@@ -102,9 +102,69 @@ docker run -it --rm -p 5173:5173 <id>
 npm run dev -- --host
 ```
 
-## Cypress
+## E2E Tests
 
-Hot loading is only supported in WSL2 on Windows.
+## In general
+
+Cypress is used for end-to-end (E2E) testing.
+
+Hot reloading with Cypress is only supported in WSL2 on Windows.
+
+### Run E2E Tests locally
+
+#### Running the tests on your local machine against a Docker container with the App
+
+Note: I did not test this steps, since I work within Dev Containers
+
+1. `docker build  --target development -t elevation-app .`
+2. `docker run -it --rm -p 5173:5173 <image-id>`
+3. Execute `npm run dev -- --host 0.0.0.0` within the Docker Container
+4. Specify `REMOTE_URL="localhost"` within `.env.e2e-test.local`
+5. Run the E2E test via `npm run test`
+6. `docker stop <container-id>`
+
+#### Running the tests from within the Dev Container against a Docker container with the App
+
+1. `docker build  --target development -t elevation-app .`
+2. `docker run -it --rm -p 5173:5173 <image-id>`
+3. Execute `npm run dev -- --host 0.0.0.0` within the Docker Container
+4. Specify `REMOTE_URL="<network-ip>"` within `.env.e2e-test.local`. For `<network-ip>` use the Network IP address which Vite does show at the last step, for example `172.17.0.3`.
+5. Run the E2E test via `npm run test`
+6. `docker stop <container-id>`
+
+#### Running the tests from within a Docker container against another Docker container with the App like in CI/CD
+
+##### With a docker network (development)
+
+1. `docker network create elevation-app-network`
+2. `docker build --target development -t elevation-app .`
+3. Specify `REMOTE_URL="elevation-app-server"` within `.env.e2e-test.local`
+4. Specify `PORT="5173"` within `.env.e2e-test.local`
+5. `docker build --target development -t elevation-app-e2e-test .`
+6. `docker run -d --rm --network=elevation-app-network --name=elevation-app-server <image-id-from-step-2> npm run dev -- --host 0.0.0.0`
+7. `docker run -t --rm --network=elevation-app-network <image-id-from-step-4> npm run test`
+8. `docker stop <container-id-from-step-5>`
+
+##### With a docker network (production)
+
+1. Open two WSL terminals and `cd` into the root of the project in both terminals.
+2. First WSL terminal: `docker network create elevation-app-network`
+3. First WSL terminal: `docker build --target production -t elevation-app .`
+4. Specify `REMOTE_URL="elevation-app-server"` within `.env.e2e-test.local`
+5. Specify `PORT="80"` within `.env.e2e-test.local`
+6. Second WSL terminal: `docker build --target development -t elevation-app-e2e-test .`
+7. First WSL terminal: `docker run -t --rm --network=elevation-app-network --name=elevation-app-server <image-id-from-step-2>`. Note: In CI/CD this has to be detached, but in development it makes sense to be able to see output.
+8. Second WSL terminal: `docker run -t --rm --network=elevation-app-network <image-id-from-step-4> npm run test`
+
+### Debug E2E Tests locally
+
+In order to debug within the container which the E2E Tests run, do the following
+
+1. Start a Dev Container
+2. Specify `REMOTE_URL="localhost"` within `.env.e2e-test.local`
+3. Start the Debugger with the Debug config with the name `npm start`
+4. Set breakpoints within the Dev Container
+5. Run the E2E test within the Dev Container via `npm run test:e2e`
 
 ## Legal disclaimer
 

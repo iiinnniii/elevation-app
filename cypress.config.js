@@ -1,7 +1,14 @@
 import { defineConfig } from 'cypress';
-import dotenvPlugin from 'cypress-dotenv';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: './.env.e2e-test.local' });
+dotenv.config({ path: './.env.e2e-test.ci' });
 
 export default defineConfig({
+	env: {
+		REMOTE_URL: process.env.REMOTE_URL,
+		PORT: process.env.PORT,
+	},
 	e2e: {
 		setupNodeEvents(on, config) {
 			// implement node event listeners here
@@ -11,13 +18,6 @@ export default defineConfig({
 					return null;
 				},
 			});
-			// Update config
-			const updatedConfig = dotenvPlugin(
-				config,
-				{ path: './.env.e2e-test.ci' },
-				true,
-			);
-			return updatedConfig;
 		},
 	},
 });
