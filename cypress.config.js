@@ -1,4 +1,5 @@
-import { defineConfig } from "cypress";
+import { defineConfig } from 'cypress';
+import dotenvPlugin from 'cypress-dotenv';
 
 export default defineConfig({
 	e2e: {
@@ -6,9 +7,17 @@ export default defineConfig({
 			// implement node event listeners here
 			on('task', {
 				log(message) {
-					console.log(message); return null;
+					console.log(message);
+					return null;
 				},
 			});
+			// Update config
+			const updatedConfig = dotenvPlugin(
+				config,
+				{ path: './.env.e2e-test.ci' },
+				true,
+			);
+			return updatedConfig;
 		},
 	},
 });

@@ -1,16 +1,14 @@
-import dotenv from 'dotenv';
+// import dotenv from 'dotenv';
 
+// dotenv.config({ path: './.env.e2e-test.local' });
+// dotenv.config({ path: './.env.e2e-test.ci' });
 
-dotenv.config({ path: './.env.e2e-test.local' });
-dotenv.config({ path: './.env.e2e-test.ci' });
-
-
-const remoteURL = `http://${process.env.REMOTE_URL}:5173/`; // "localhost" | "host.docker.internal" | "elevation-app-server"
+const remoteURL = `http://${Cypress.env('REMOTE_URL')}:5173/`; // "localhost" | "host.docker.internal" | "elevation-app-server"
 
 describe('Map Click Elevation Test', function () {
 	beforeEach(function () {
-		cy.task('log', process.cwd());
-		cy.task('log', process.env.REMOTE_URL);
+		cy.task('log', `process.cwd(): ${process.cwd()}`);
+		cy.task('log', `Cypress.env('REMOTE_URL'): ${Cypress.env('REMOTE_URL')}`);
 		cy.visit(remoteURL);
 	});
 
@@ -20,8 +18,7 @@ describe('Map Click Elevation Test', function () {
 		// cy.wait('@fetchElevation');
 
 		// Click on the map at specific coordinates
-		cy.get('.leaflet-container')
-			.click(300, 200); // Adjust coordinates as needed
+		cy.get('.leaflet-container').click(300, 200); // Adjust coordinates as needed
 
 		cy.log('Waiting for fetchElevation request');
 		cy.wait('@fetchElevation', { timeout: 10000 }).then((interception) => {
@@ -33,7 +30,9 @@ describe('Map Click Elevation Test', function () {
 			.should('not.contain', 'Loading...')
 			.and('contain', 'meters');
 
-		// Log: Final check 
-		cy.get('p').then((p) => { cy.log('Paragraph text after fetch:', p.text()); });
+		// Log: Final check
+		cy.get('p').then((p) => {
+			cy.log('Paragraph text after fetch:', p.text());
+		});
 	});
 });
