@@ -39,7 +39,7 @@ ENV NODE_ENV=production
 WORKDIR /usr/src/app
 COPY --from=build /usr/src/app/package.json .
 COPY --from=build /usr/src/app/package-lock.json .
-COPY --from=build /usr/src/app/build ./build
+COPY --from=build /usr/src/app/dist ./dist
 RUN npm ci --omit=dev
 EXPOSE 5173
 RUN chown -R node .
