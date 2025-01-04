@@ -11,7 +11,6 @@
 		"type-check": "tsc --build",
 		"type-check:watch": "tsc --build --watch",
 		"format": "prettier --write .",
-		"ci:build": "tsc",
 		"cy:open": "cypress open",
 		"test": "cypress run --browser chrome"
 	},

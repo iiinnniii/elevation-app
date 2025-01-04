@@ -32,7 +32,7 @@ FROM base AS development
 CMD ["/bin/bash"]
 
 FROM base AS build
-RUN npm run ci:build
+RUN npm run build
 
 FROM node:22.12.0 AS production
 ENV NODE_ENV=production
