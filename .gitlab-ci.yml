@@ -10,8 +10,6 @@ stages:
 default:
   image: cypress/browsers
   before_script:
-    #- apt-get update
-    #- apt-get install -y xvfb
     - npm install
 
 variables:
@@ -77,6 +75,7 @@ build-job:
   script:
     - npm run build
 
+# Better would be to test the actually prod docker image which then gets also pushed into the registry. Since it is not necessary for this demo I excluded this code.
 e2e-test-job:
   stage: e2e
   tags:
@@ -92,12 +91,3 @@ e2e-test-job:
   script:
     - npm run dev &
     - npm run test
-
-package-job:
-  stage: package
-  tags:
-    - elevation-app
-  script:
-    - echo "Packging started..."
-    - sleep 1
-    - echo "Packging finished"
