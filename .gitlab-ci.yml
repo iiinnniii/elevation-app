@@ -66,6 +66,7 @@ build-docker-image-job:
     paths:
       - elevation-app.tar
   script:
+    - docker info
     - docker build --target production -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} .
     - docker save -o elevation-app.tar ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
 #e2e-test-job:
