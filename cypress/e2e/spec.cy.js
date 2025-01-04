@@ -1,16 +1,16 @@
 import dotenv from 'dotenv';
 
-cy.task('log', process.cwd());
 
 dotenv.config({ path: './.env.e2e-test.local' });
 dotenv.config({ path: './.env.e2e-test.ci' });
 
-cy.task('log', process.env.REMOTE_URL);
 
 const remoteURL = `http://${process.env.REMOTE_URL}:5173/`; // "localhost" | "host.docker.internal" | "elevation-app-server"
 
 describe('Map Click Elevation Test', function () {
 	beforeEach(function () {
+		cy.task('log', process.cwd());
+		cy.task('log', process.env.REMOTE_URL);
 		cy.visit(remoteURL);
 	});
 
