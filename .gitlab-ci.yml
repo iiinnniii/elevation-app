@@ -7,7 +7,7 @@ stages:
   - e2e
   - push-docker-image
 
-.node_modules-cache: &node_modules-cache
+.cache: &cache
   key:
     files:
       - package-lock.json
@@ -27,7 +27,7 @@ install-job:
   tags:
     - elevation-app
   cache:
-    <<: *node_modules-cache
+    <<: *cache
     policy: pull-push
   script:
     - npm install
@@ -38,7 +38,7 @@ build-job:
   tags:
     - elevation-app
   cache:
-    <<: *node_modules-cache
+    <<: *cache
   script:
     - npm run build
 
@@ -47,7 +47,7 @@ eslint-job:
   tags:
     - elevation-app
   cache:
-    <<: *node_modules-cache
+    <<: *cache
     policy: pull
   script:
     - npm run lint
