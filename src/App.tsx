@@ -33,9 +33,9 @@ const App = () => {
 		fetchElevation(loc.lat, loc.lng);
 	};
 
-	// const a: number = 'dfdf';
-	// let b = c + 1;
-	// console.log(b);
+	const a: number = 'dfdf';
+	let b = c + 1;
+	console.log(b);
 
 	return (
 		<div>
