@@ -177,15 +177,9 @@ This might be uselful to debug something locally exactly as it happens in CI/CD 
 7. First WSL terminal: `docker run -t --rm --network=elevation-app-network --name=elevation-app-server <image-id-from-step-2>`. Note: In CI/CD this has to be detached, but in development it makes sense to be able to see output.
 8. Second WSL terminal: `docker run -t --rm --network=elevation-app-network <image-id-from-step-4> npm run test`
 
-### Debug E2E Tests locally
+## Debugging
 
-In order to debug within the container which the E2E Tests run, do the following
-
-1. Start a Dev Container
-2. Specify `REMOTE_URL="localhost"` within `.env.e2e-test.local`
-3. Start the Debugger with the Debug config with the name `npm start`
-4. Set breakpoints within the Dev Container
-5. Run the E2E test within the Dev Container via `npm run test:e2e`
+Use the launch configurations.
 
 ## Legal disclaimer
 
