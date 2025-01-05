@@ -36,6 +36,7 @@ const App = () => {
 	const a: number = 'dfdf';
 	let b = c + 1;
 	console.log(b);
+	// Foo
 
 	return (
 		<div>
