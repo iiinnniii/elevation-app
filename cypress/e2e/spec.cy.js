@@ -7,7 +7,6 @@ const remoteURL = `http://${Cypress.env('REMOTE_URL')}:${Cypress.env('PORT')}/`;
 
 describe('Map Click Elevation Test', function () {
 	beforeEach(function () {
-		cy.task('log', `process.cwd(): ${process.cwd()}`);
 		cy.task('log', `Cypress.env('REMOTE_URL'): ${Cypress.env('REMOTE_URL')}`);
 		cy.task('log', `Cypress.env('PORT'): ${Cypress.env('PORT')}`);
 		cy.task('log', `remoteURL: ${remoteURL}`);
