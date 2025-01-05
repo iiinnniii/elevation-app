@@ -88,10 +88,9 @@ e2e-test-job:
     - echo REMOTE_URL="elevation-app-server" >> .env.e2e-test.ci
     - echo PORT="80" >> .env.e2e-test.ci
     - cat .env.e2e-test.ci
+    - echo "CI_REGISTRY_IMAGE ${CI_REGISTRY_IMAGE}"
+    - echo "CI_COMMIT_SHA ${CI_COMMIT_SHA}"
     - docker build --target development -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e .
-    # - echo "CI_REGISTRY_IMAGE ${CI_REGISTRY_IMAGE}"
-    # - echo "CI_COMMIT_SHA ${CI_COMMIT_SHA}"
-    # - sleep 1d
     - docker network create elevation-app-network
     - docker run -d --rm --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
     - docker run -t --rm --network=elevation-app-network ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e npm run test
