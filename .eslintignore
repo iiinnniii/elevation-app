@@ -9,3 +9,5 @@ index.html
 *.svg
 *.css
 cache
+cypress/fixtures
+nginx.conf

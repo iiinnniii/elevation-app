@@ -11,11 +11,11 @@
 		"type-check": "tsc --build",
 		"type-check:watch": "tsc --build --watch",
 		"format": "prettier --write .",
-		"ci:build": "tsc",
 		"cy:open": "cypress open",
 		"test": "cypress run --browser chrome"
 	},
 	"dependencies": {
+		"dotenv": "^16.4.7",
 		"leaflet": "^1.9.4",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
@@ -31,6 +31,7 @@
 		"@vitejs/plugin-react": "^4.3.4",
 		"autoprefixer": "^10.4.20",
 		"cypress": "^13.17.0",
+		"cypress-dotenv": "^3.0.1",
 		"eslint": "^8.57.1",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-chai-friendly": "^1.0.1",

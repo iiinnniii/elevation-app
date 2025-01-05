@@ -1,16 +1,23 @@
 stages:
   - install
-  - type-check
-  - lint
-  - test
   - build
+  - lint
+  #- test
+  - build-docker-image
   - e2e
-  - package
+  - push-docker-image
+
+.node_modules-cache: &node_modules-cache
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - node_modules
+    - cache/Cypress
+  policy: pull
 
 default:
   image: cypress/browsers
-  before_script:
-    - npm install
 
 variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
@@ -20,74 +27,103 @@ install-job:
   tags:
     - elevation-app
   cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - node_modules
-      - cache/Cypress
+    <<: *node_modules-cache
     policy: pull-push
   script:
     - npm install
 
-type-check-job:
-  stage: type-check
+# Note: The build job also performs type-checking
+build-job:
+  stage: build
   tags:
     - elevation-app
   cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - node_modules
-      - cache/Cypress
-    policy: pull
+    <<: *node_modules-cache
   script:
-    - npm run type-check
+    - npm run build
 
 eslint-job:
   stage: lint
   tags:
     - elevation-app
   cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - node_modules
-      - cache/Cypress
+    <<: *node_modules-cache
     policy: pull
   script:
     - npm run lint
 
-build-job:
-  stage: build
+build-docker-image-job:
+  stage: build-docker-image
   tags:
     - elevation-app
-  cache:
-    key:
-      files:
-        - package-lock.json
+  image: docker:24.0.7
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: '/certs'
+  services:
+    - docker:24.0.7-dind
+  artifacts:
     paths:
-      - node_modules
-      - cache/Cypress
-    policy: pull
+      - elevation-app.tar
   script:
-    - npm run build
+    - docker info
+    - docker build --target production -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} .
+    - docker save -o elevation-app.tar ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
 
-# Better would be to test the actually prod docker image which then gets also pushed into the registry. Since it is not necessary for this demo I excluded this code.
 e2e-test-job:
   stage: e2e
   tags:
     - elevation-app
-  cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - node_modules
-      - cache/Cypress
-    policy: pull
+  image: docker:24.0.7
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: '/certs'
+  services:
+    - docker:24.0.7-dind
   script:
-    - npm run dev &
-    - npm run test
+    - docker load -i elevation-app.tar
+    - docker image ls
+    - rm elevation-app.tar
+    - touch .env.e2e-test.ci
+    - echo REMOTE_URL="elevation-app-server" >> .env.e2e-test.ci
+    - echo PORT="80" >> .env.e2e-test.ci
+    - cat .env.e2e-test.ci
+    - echo "CI_REGISTRY_IMAGE ${CI_REGISTRY_IMAGE}"
+    - echo "CI_COMMIT_SHA ${CI_COMMIT_SHA}"
+    - docker build --target development -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e .
+    - docker network create elevation-app-network
+    - docker run -d --rm --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
+    - docker run -t --rm --network=elevation-app-network ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e npm run test
+
+push-docker-image-job:
+  stage: push-docker-image
+  tags:
+    - elevation-app
+  image: docker:24.0.7
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: '/certs'
+    ROOT_CA_CERTIFICATE: '${CA_CERTIFICATE}' # Workaround for Variables from 'Settings > CI/CD > Variables' are not expanded within services:[]:command https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3808
+  services:
+    - name: docker:24.0.7-dind
+      command:
+        - /bin/sh
+        - -c
+        - echo "$ROOT_CA_CERTIFICATE" > /usr/local/share/ca-certificates/ca.crt && update-ca-certificates && dockerd-entrypoint.sh || exit
+  rules:
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+  script:
+    - docker load -i elevation-app.tar
+    - docker image ls
+    - echo "IMPORTANT! The following docker login command will cause a WARNING, but this warning is harmless, because the container created from the docker executor gets removed after the pipeline is finished and /root/.docker/config.json does not end up in the image which gets created via docker build in this job."
+    - echo "${CONTAINER_REGISTRY_PASSWORD:?}" | docker login "${CONTAINER_REGISTRY_SERVER:?}" --password-stdin --username "${CONTAINER_REGISTRY_USERNAME:?}"
+    - >
+      if [ "${CI_COMMIT_BRANCH}" == "production" ]; then
+        docker tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} ${CI_REGISTRY_IMAGE}:latest
+        docker image ls
+        docker push ${CI_REGISTRY_IMAGE}:latest
+      else
+        docker tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} ${CI_REGISTRY_IMAGE}:${CI_COMMIT_BRANCH}-latest
+        docker image ls
+        docker push ${CI_REGISTRY_IMAGE}:${CI_COMMIT_BRANCH}-latest
+      fi

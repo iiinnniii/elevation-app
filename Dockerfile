@@ -32,6 +32,10 @@ FROM base AS development
 CMD ["/bin/bash"]
 
 FROM base AS build
-RUN npm run ci:build
+RUN npm run build
 
-# I excluded the production code, because it is not necessary for this demo
+FROM nginx AS production
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=build /usr/src/app/dist /usr/share/nginx/html
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
