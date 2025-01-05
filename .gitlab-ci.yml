@@ -94,36 +94,36 @@ e2e-test-job:
     - docker network create elevation-app-network
     - docker run -d --rm --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
     - docker run -t --rm --network=elevation-app-network ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e npm run test
-#push-docker-image-job:
-#  stage: push-docker-image
-#  tags:
-#    - elevation-app
-#  image: docker:24.0.7
-#  variables:
-#    DOCKER_DRIVER: overlay2
-#    DOCKER_TLS_CERTDIR: '/certs'
-#    ROOT_CA_CERTIFICATE: '${CA_CERTIFICATE}' # Workaround for Variables from 'Settings > CI/CD > Variables' are not expanded within services:[]:command https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3808
-#  services:
-#    - name: docker:24.0.7-dind
-#      command:
-#        - /bin/sh
-#        - -c
-#        - echo "$ROOT_CA_CERTIFICATE" > /usr/local/share/ca-certificates/ca.crt && update-ca-certificates && dockerd-entrypoint.sh || exit
-#  rules:
-#    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
-#  script:
-#    - docker load -i elevation-app.tar
-#    - docker image ls
-#    - echo "IMPORTANT! The following docker login command will cause a WARNING, but this warning is not of any concern, because the container created from the docker executor gets removed after the pipeline is finished and /root/.docker/config.json does not end up in the image which gets created via docker build in this job."
-#    - echo "${CONTAINER_REGISTRY_PASSWORD:?}" | docker login "${CONTAINER_REGISTRY_SERVER:?}" --password-stdin --username "${CONTAINER_REGISTRY_USERNAME:?}"
-#    - >
-#      if [ "${CI_COMMIT_BRANCH}" == "production" ]; then
-#        docker tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} ${CI_REGISTRY_IMAGE}:latest
-#        docker image ls
-#        docker push ${CI_REGISTRY_IMAGE}:latest
-#      else
-#        docker tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} ${CI_REGISTRY_IMAGE}:${CI_COMMIT_BRANCH}-latest
-#        docker image ls
-#        docker push ${CI_REGISTRY_IMAGE}:${CI_COMMIT_BRANCH}-latest
-#      fi
-#
+
+push-docker-image-job:
+  stage: push-docker-image
+  tags:
+    - elevation-app
+  image: docker:24.0.7
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: '/certs'
+    ROOT_CA_CERTIFICATE: '${CA_CERTIFICATE}' # Workaround for Variables from 'Settings > CI/CD > Variables' are not expanded within services:[]:command https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3808
+  services:
+    - name: docker:24.0.7-dind
+      command:
+        - /bin/sh
+        - -c
+        - echo "$ROOT_CA_CERTIFICATE" > /usr/local/share/ca-certificates/ca.crt && update-ca-certificates && dockerd-entrypoint.sh || exit
+  rules:
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+  script:
+    - docker load -i elevation-app.tar
+    - docker image ls
+    - echo "IMPORTANT! The following docker login command will cause a WARNING, but this warning is harmless, because the container created from the docker executor gets removed after the pipeline is finished and /root/.docker/config.json does not end up in the image which gets created via docker build in this job."
+    - echo "${CONTAINER_REGISTRY_PASSWORD:?}" | docker login "${CONTAINER_REGISTRY_SERVER:?}" --password-stdin --username "${CONTAINER_REGISTRY_USERNAME:?}"
+    - >
+      if [ "${CI_COMMIT_BRANCH}" == "production" ]; then
+        docker tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} ${CI_REGISTRY_IMAGE}:latest
+        docker image ls
+        docker push ${CI_REGISTRY_IMAGE}:latest
+      else
+        docker tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} ${CI_REGISTRY_IMAGE}:${CI_COMMIT_BRANCH}-latest
+        docker image ls
+        docker push ${CI_REGISTRY_IMAGE}:${CI_COMMIT_BRANCH}-latest
+      fi
