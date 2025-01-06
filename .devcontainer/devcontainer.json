@@ -55,5 +55,5 @@
 	],
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "devcontainer"
-	"postStartCommand": "npm install && [ -d /mnt/gpg_files/.gnupg ] && cp -r /mnt/gpg_files/.gnupg /root && [ -f /mnt/ca_certificates/rootCA.crt ] && cp /mnt/ca_certificates/rootCA.crt /usr/local/share/ca-certificates && update-ca-certificates"
+	"postStartCommand": "npm install && [ -d /mnt/gpg_files/.gnupg ] && cp -r /mnt/gpg_files/.gnupg /root && [ -f /mnt/ca_certificates/rootCA.crt ] && cp /mnt/ca_certificates/rootCA.crt /usr/local/share/ca-certificates && update-ca-certificates && npm outdated || true"
 }
