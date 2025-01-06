@@ -39,6 +39,7 @@
 	},
 	"mounts": [
 		{
+			"source": "elevation_app_node_modules",
 			"target": "${containerWorkspaceFolder}/node_modules",
 			"type": "volume"
 		},
