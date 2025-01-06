@@ -1,4 +1,8 @@
+// hooks
 import { useState } from 'react';
+
+// types
+import type { FormEvent } from 'react';
 
 const LocationForm = ({
 	setLocation,
@@ -8,7 +12,7 @@ const LocationForm = ({
 	const [lat, setLat] = useState('');
 	const [lng, setLng] = useState('');
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
 		setLocation({ lat: parseFloat(lat), lng: parseFloat(lng) });
 	};
