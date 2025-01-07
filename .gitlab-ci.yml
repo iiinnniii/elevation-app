@@ -60,8 +60,8 @@ install-job:
     #- echo "The inode is $INODE"
     #- echo "Lets check if everything is palletti"
     #- find ./node_modules -type f -exec ls -lai {} \; | grep "$INODE "
-    - sleep 1d
     - pnpm install --frozen-lockfile
+    - sleep 1d
 
 # Note: The build job also performs type-checking
 build-job:
