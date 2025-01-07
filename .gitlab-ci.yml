@@ -25,15 +25,13 @@ variables:
 
 .install_pnpm: &install_pnpm
   # Define where pnpm should be installed. The install script below respects this environment variable.
-  - export PNPM_HOME="/pnpm"
+  - export PNPM_HOME="/usr/src/app/.pnpm-store"
   # Add pnpm to the PATH
   - export PATH="$PNPM_HOME:$PATH"
   # Install pnpm
   - wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
   # Use the `which npm` command to find the npm path and disable it
   - mv "$(which npm)" "$(which npm)-disabled"
-  # Set store-dir for pnmp
-  - pnpm config set store-dir .pnpm-store
 
 install-job:
   stage: install
