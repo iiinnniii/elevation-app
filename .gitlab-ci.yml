@@ -31,9 +31,9 @@ install-job:
     policy: pull-push
   script:
     # Define where pnpm should be installed. The install script below respects this environment variable.
-    - PNPM_HOME="/pnpm"
+    - export PNPM_HOME="/pnpm"
     # Add pnpm to the PATH
-    - PATH="$PNPM_HOME:$PATH"
+    - export PATH="$PNPM_HOME:$PATH"
     # Install pnpm
     - wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
     # Use the `which npm` command to find the npm path and disable it
