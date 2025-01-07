@@ -57,7 +57,7 @@ install-job:
     - INODE=$(ls -li node_modules/.pnpm/react@19.0.0/node_modules/react | awk 'NR==7 {print $1}')
     - echo "The inode is $INODE"
     - echo "Lets check if everything is palletti"
-    - find ./.pnpm-store/v3/files -xdev -inum $INODE
+    - find ./.pnpm-store/store/v3/files -type f -exec ls -lai {} \; | grep "$INODE "
     - pnpm install --frozen-lockfile
 
 # Note: The build job also performs type-checking
