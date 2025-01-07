@@ -28,6 +28,12 @@ before_script:
   - export PNPM_HOME="/pnpm"
   # Add pnpm to the PATH
   - export PATH="$PNPM_HOME:$PATH"
+  # Install pnpm
+  - wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
+  # Use the `which npm` command to find the npm path and disable it
+  - mv "$(which npm)" "$(which npm)-disabled"
+  # Set store-dir for pnmp
+  - pnpm config set store-dir .pnpm-store
 
 install-job:
   stage: install
@@ -37,13 +43,6 @@ install-job:
     <<: *cache
     policy: pull-push
   script:
-    # Install pnpm
-    - wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
-    # Use the `which npm` command to find the npm path and disable it
-    - mv "$(which npm)" "$(which npm)-disabled"
-    # Set store-dir for pnmp
-    - pnpm config set store-dir .pnpm-store
-    # Install project dependencies
     - pnpm install --frozen-lockfile
 
 # Note: The build job also performs type-checking
