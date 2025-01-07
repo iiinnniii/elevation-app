@@ -23,7 +23,7 @@ default:
 variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
 
-before_script:
+.install_pnpm: &install_pnpm
   # Define where pnpm should be installed. The install script below respects this environment variable.
   - export PNPM_HOME="/pnpm"
   # Add pnpm to the PATH
@@ -41,7 +41,9 @@ install-job:
     - elevation-app
   cache:
     <<: *cache
-    policy: pull-push
+    policy: pull-push3
+  before_script:
+    - *install_pnpm
   script:
     - pnpm install --frozen-lockfile
 
@@ -52,6 +54,8 @@ build-job:
     - elevation-app
   cache:
     <<: *cache
+  before_script:
+    - *install_pnpm
   script:
     - pnpm run build
 
@@ -62,6 +66,8 @@ eslint-job:
   cache:
     <<: *cache
     policy: pull
+  before_script:
+    - *install_pnpm
   script:
     - pnpm run lint
 
