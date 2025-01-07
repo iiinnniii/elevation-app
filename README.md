@@ -113,7 +113,7 @@ Ctrl + P
 ### Start via Docker
 
 ```
-docker build .
+docker build --target development .
 docker run -it --rm -p 5173:5173 <id>
 pnpm run dev -- --host
 ```
