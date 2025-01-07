@@ -41,7 +41,7 @@ install-job:
     - elevation-app
   cache:
     <<: *cache
-    policy: pull-push3
+    policy: pull-push
   before_script:
     - *install_pnpm
   script:
