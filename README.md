@@ -96,6 +96,8 @@ code ~/playground/data-science-service-gmbh/elevation-app
 
 ### Start via Dev Container (highly recommended)
 
+**IMPORTANT:** It is **strongly** recommended to avoid opening the project directly on Windows within a Dev Container. Instead, use WSL. This is because the behavior of hardlinks created by pnpm is not fully understood when pnpm is not aware of the bind mount of the Dev Container, which could lead to potential issues.
+
 1. Open Visual Studio Code
 2. Start the Dev Container
 
