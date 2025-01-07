@@ -22,9 +22,9 @@ if Git is already installed.
 
 ## Dependencies
 
-You do not need to install the following dependencies on your local system when working within the Dev Container. All necessary dependencies will be automatically installed when the Dev Container is started, as long as you have Docker Desktop set up.
+You don't need to install the following dependencies on your local system when working within a Dev Container. All necessary dependencies will be automatically installed when the Dev Container is started, as long as you have Docker Desktop set up.
 
-If you already have the following dependencies installed, then you can start using the App without the Dev Container. However, it is highly recommended to use the Dev Container for various reasons, such as isolation, cross-platform compatibility, and serving as a source of trust in case of conflicts.
+If you already have the following dependencies installed, then you can start using the App without a Dev Container. However, it is highly recommended to use the Dev Container for various reasons, such as isolation, cross-platform compatibility, and serving as a source of trust in case of conflicts.
 
 ```
 $ node --version
@@ -40,7 +40,7 @@ The Dockerfile is configured to enforce the use of `pnpm` by default. As a resul
 
 To avoid any issues, if you do not use the Dev Container, ensure that you consistently use `pnpm` commands. Accidental usage of a mixture of `pnpm` and `npm` commands could lead to unexpected behavior.
 
-If you prefer not to use Dev Containers and choose to configure your system to avoid accidentally executing `npm` commands, you may do so at your own discretion. However, this approach is not recommended.
+If you prefer not to use Dev Containers and choose to configure your system to avoid accidentally executing a mixture of `pnpm` and `npm` commands, you may do so at your own discretion. However, this approach is not recommended.
 
 ## Prerequisites
 
@@ -67,11 +67,13 @@ Please also review and follow the OS-specific requirements below.
 
 #### Windows
 
-If you are using Windows, it's strongly recommended to start the Dev Container within a WSL 2 distro. This avoids performance problems in general and hot reloading issues with cypress when using Dev Containers on Windows.
+If you're using Windows, it's highly recommended to run the Dev Container within a WSL 2 (Windows Subsystem for Linux 2) distribution. This approach helps avoid performance issues and resolves hot reloading problems with Cypress when working with Dev Containers on Windows.
 
-Do not use `/mnt/...` paths. Instead, place your project somewhere within the `~` directory. Hot reloading will not work correctly if you use `/mnt/...` paths.
+Additionally, running the Dev Container in WSL 2 offers better isolation and significantly improved performance for tools like `pnpm`. For the best experience, WSL 2 is the preferred environment.
 
-Here's an example of how to move your folder into WSL:
+When working within WSL (Windows Subsystem for Linux), it's important to avoid using `/mnt/...` paths for your project. Instead, place your project directory within the ~ (home) directory or a subdirectory of the ~ (home) directory. Hot reloading and other features may not work correctly if your project is located in the `/mnt/...` path.
+
+Here’s an example of how to move your project folder into WSL:
 
 ```bash
 # Create necessary directories
@@ -101,6 +103,8 @@ code ~/playground/data-science-service-gmbh/elevation-app
 Ctrl + P
 > Dev Containers: Rebuild and Reopen in Container
 ```
+
+3. Execute `pnpm run dev`
 
 ### Start via Docker
 
@@ -187,7 +191,7 @@ This might be uselful to debug something locally exactly as it happens in CI/CD 
 
 ## Debugging
 
-Use the launch configurations.
+To debug your application, utilize the launch configurations provided in the .vscode/launch.json file. These configurations are pre-set to help you start debugging efficiently within your development environment.
 
 ## Legal disclaimer
 
