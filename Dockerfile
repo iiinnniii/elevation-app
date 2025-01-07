@@ -1,18 +1,12 @@
 FROM node:22.12.0 AS base
 # Define where pnpm should be installed. The install script below respects this environment variable.
-ENV PNPM_HOME="/pnpm"
+ENV PNPM_HOME="/usr/src/app/.pnpm-store"
 # Add pnpm to the PATH
 ENV PATH="$PNPM_HOME:$PATH"
 # Install pnpm
 RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
 # Use the `which npm` command to find the npm path and disable it 
 RUN mv "$(which npm)" "$(which npm)-disabled"
-# Set working directory	
-WORKDIR /usr/src/app
-# Copy package files to install dependencies
-COPY ["package.json", "package-lock.json*", "pnpm-lock.yaml", "./"]
-# Copy the rest of the application source code
-COPY . .
 # Install necessary packages for cypress
 RUN apt-get update && apt-get install -y \
 	libgtk2.0-0 \
@@ -35,6 +29,12 @@ RUN apt-get update
 RUN apt-get install -y --no-install-recommends firefox
 # Clean up to reduce image size
 RUN rm -rf ./google-chrome-stable_current_amd64.deb
+# Set working directory	
+WORKDIR /usr/src/app
+# Copy package files to install dependencies
+COPY ["package.json", "package-lock.json*", "pnpm-lock.yaml", "./"]
+# Copy the rest of the application source code
+COPY . .
 # Expose the application port
 EXPOSE 5173
 
