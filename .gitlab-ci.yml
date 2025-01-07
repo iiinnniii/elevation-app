@@ -52,11 +52,12 @@ install-job:
     - echo "Lets check the links in node_modules"
     - ls -la node_modules/
     - echo "Lets get the inode of the react hardlink"
-    - ls -li node_modules/.pnpm/react@19.0.0/node_modules/react | awk 'NR==3 {print $1}'
+    - INODE=$(ls -li node_modules/.pnpm/react@19.0.0/node_modules/react | awk 'NR==3 {print $1}')
+    - echo "The inode is $INODE"
     - echo "Lets cd into the root of the container"
     - cd /
     - echo "Lets check if everything is palletti"
-    - find / -inum $(ls -li node_modules/.pnpm/react@19.0.0/node_modules/react | awk 'NR==3 {print $1}')
+    - find . -inum $INODE
     - pnpm install --frozen-lockfile
 
 # Note: The build job also performs type-checking
