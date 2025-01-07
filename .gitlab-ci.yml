@@ -50,6 +50,7 @@ install-job:
     - echo "Lets look into the project directory .pnpm-store there?"
     - ls -la
     - ls -la .pnpm-store/v3/files
+    - ls -lai .pnpm-store/v3/files/74
     - echo "Lets check the links in node_modules"
     - ls -la node_modules/
     - echo "Lets get the inode of the react hardlink"
