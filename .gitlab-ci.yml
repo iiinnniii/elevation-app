@@ -25,7 +25,7 @@ variables:
 
 .install_pnpm: &install_pnpm
   # Define where pnpm should be installed. The install script below respects this environment variable.
-  - export PNPM_HOME="/usr/src/app/.pnpm-store"
+  - export PNPM_HOME="$(pwd)/.pnpm-store"
   # Add pnpm to the PATH
   - export PATH="$PNPM_HOME:$PATH"
   # Install pnpm
