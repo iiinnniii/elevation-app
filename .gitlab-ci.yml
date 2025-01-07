@@ -44,6 +44,7 @@ install-job:
     - *install_pnpm
   script:
     - echo "A little debugging if everything is fine"
+    - echo "Current working directory is $(pwd)"
     - echo "Lets look into the root of the docker container, no /pnmp should be there"
     - ls -la /
     - echo "Lets look into the project directory .pnpm-store there?"
