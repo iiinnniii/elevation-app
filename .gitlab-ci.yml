@@ -57,7 +57,7 @@ install-job:
     - echo "Lets cd into the root of the container"
     - cd /
     - echo "Lets check if everything is palletti"
-    - find . -inum $INODE
+    - find . -xdev -inum $INODE
     - pnpm install --frozen-lockfile
 
 # Note: The build job also performs type-checking
