@@ -10,9 +10,10 @@ stages:
 .cache: &cache
   key:
     files:
-      - package-lock.json
+      - pnpm-lock.yaml
   paths:
     - node_modules
+    - .pnpm-store
     - cache/Cypress
   policy: pull
 
@@ -22,6 +23,16 @@ default:
 variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
 
+.install_pnpm:
+  &install_pnpm # Define where pnpm should be installed. The install script below respects this environment variable.
+  - export PNPM_HOME="$(pwd)/.pnpm-store"
+  # Add pnpm to the PATH
+  - export PATH="$PNPM_HOME:$PATH"
+  # Install pnpm
+  - wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
+  # Use the `which npm` command to find the npm path and disable it
+  - mv "$(which npm)" "$(which npm)-disabled"
+
 install-job:
   stage: install
   tags:
@@ -29,8 +40,10 @@ install-job:
   cache:
     <<: *cache
     policy: pull-push
+  before_script:
+    - *install_pnpm
   script:
-    - npm install
+    - pnpm install --frozen-lockfile
 
 # Note: The build job also performs type-checking
 build-job:
@@ -39,8 +52,10 @@ build-job:
     - elevation-app
   cache:
     <<: *cache
+  before_script:
+    - *install_pnpm
   script:
-    - npm run build
+    - pnpm run build
 
 eslint-job:
   stage: lint
@@ -49,8 +64,10 @@ eslint-job:
   cache:
     <<: *cache
     policy: pull
+  before_script:
+    - *install_pnpm
   script:
-    - npm run lint
+    - pnpm run lint
 
 build-docker-image-job:
   stage: build-docker-image
@@ -93,7 +110,7 @@ e2e-test-job:
     - docker build --target development -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e .
     - docker network create elevation-app-network
     - docker run -d --rm --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
-    - docker run -t --rm --network=elevation-app-network ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e npm run test
+    - docker run -t --rm --network=elevation-app-network ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e pnpm run test
 
 push-docker-image-job:
   stage: push-docker-image
