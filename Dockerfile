@@ -4,7 +4,7 @@ FROM node:22.12.0 AS base
 WORKDIR /usr/src/app
 
 # Define where pnpm should be installed. The install script respects this environment variable.
-ENV PNPM_HOME=".pnpm-store"
+ENV PNPM_HOME="/pnpm"
 
 # Add pnpm to the system PATH so it can be used globally
 ENV PATH="$PNPM_HOME:$PATH"

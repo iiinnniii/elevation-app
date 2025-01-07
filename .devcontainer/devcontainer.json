@@ -39,16 +39,6 @@
 	},
 	"mounts": [
 		{
-			"source": "elevation_app_node_modules",
-			"target": "${containerWorkspaceFolder}/node_modules",
-			"type": "volume"
-		},
-		{
-			"source": "elevation_app_pnpm_store",
-			"target": "${containerWorkspaceFolder}/.pnpm-store",
-			"type": "volume"
-		},
-		{
 			"source": "gpg_files",
 			"target": "/mnt/gpg_files",
 			"type": "volume"
