@@ -22,7 +22,7 @@ if Git is already installed.
 
 ## Dependencies
 
-There's no need to install the following dependencies when working within the Dev Container. All you need is Docker Desktop.
+You do not need to install the following dependencies on your local system when working within the Dev Container. All necessary dependencies will be automatically installed when the Dev Container is started, as long as you have Docker Desktop set up.
 
 If you already have the following dependencies installed, then you can start using the App without the Dev Container. However, it is highly recommended to use the Dev Container for various reasons, such as isolation, cross-platform compatibility, and serving as a source of trust in case of conflicts.
 
@@ -30,9 +30,17 @@ If you already have the following dependencies installed, then you can start usi
 $ node --version
 v22.12.0
 
-$ npm --version
-10.9.0
+$ pnpm --version
+9.15.3
 ```
+
+## Package management
+
+The Dockerfile is configured to enforce the use of `pnpm` by default. As a result, `npm` commands are not available to execute within the Dev Container. This configuration ensures that you cannot accidentally execute a mixture of `pnpm` and `npm` commands, which could lead to undesired behavior.
+
+To avoid any issues, if you do not use the Dev Container, ensure that you consistently use `pnpm` commands. Accidental usage of a mixture of `pnpm` and `npm` commands could lead to unexpected behavior.
+
+If you prefer not to use Dev Containers and choose to configure your system to avoid accidentally executing `npm` commands, you may do so at your own discretion. However, this approach is not recommended.
 
 ## Prerequisites
 
@@ -99,7 +107,7 @@ Ctrl + P
 ```
 docker build .
 docker run -it --rm -p 5173:5173 <id>
-npm run dev -- --host
+pnpm run dev -- --host
 ```
 
 ## End-to-End (E2E) Tests
@@ -117,10 +125,10 @@ Please note, hot reloading with Cypress is only supported in WSL2 on Windows. Th
 Generally this will be the approach you will use most often during development.
 
 1. Open two `bash` terminals within Visual Studio Code wich is running the Dev Container
-2. First terminal: `npm run dev -- --host 0.0.0.0`
+2. First terminal: `pnpm run dev --host 0.0.0.0`
 3. Specify `REMOTE_URL="<network-ip>"` within `.env.e2e-test.local`. For `<network-ip>` use the Network IP address which Vite does show at step 2. For example: `REMOTE_URL="172.17.0.2"`
 4. Specify `PORT="5173"` within `.env.e2e-test.local`
-5. Second terminal: Run the E2E test via `npm run test` or `npm run cy:open`
+5. Second terminal: Run the E2E test via `pnpm run test` or `pnpm run cy:open`
 
 #### Running the tests from within the Dev Container against the App running in a Docker container
 
@@ -130,10 +138,10 @@ This approach may not be frequently used, but it's important to document it for 
 
 1. WSL terminal: `docker build --target development -t elevation-app .`
 2. WSL terminal: `docker run -it --rm -p 5173:5173 <image-id>`
-3. WSL terminal: Execute `npm run dev -- --host 0.0.0.0` within the Docker Container
+3. WSL terminal: Execute `pnpm run dev --host 0.0.0.0` within the Docker Container
 4. Specify `REMOTE_URL="<network-ip>"` within `.env.e2e-test.local`. For `<network-ip>` use the Network IP address which Vite does show at step 3. For example: `REMOTE_URL="172.17.0.3"`
 5. Specify `PORT="5173"` within `.env.e2e-test.local`
-6. Dev Container bash terminal: Run the E2E test via `npm run test` or `npm run cy:open`
+6. Dev Container bash terminal: Run the E2E test via `pnpm run test` or `pnpm run cy:open`
 
 ##### Test again production build
 
@@ -145,7 +153,7 @@ This can be helpful for debugging why tests are failing in the CI/CD pipeline on
 4. Second WSL terminal: `docker inspect <container_id_or_name> | grep "IPAddress"`
 5. Specify `REMOTE_URL="<network-ip>"` within `.env.e2e-test.local`. For `<network-ip>` use the Network IP address from the last step.
 6. Specify `PORT="80"` within `.env.e2e-test.local`
-7. Dev Container bash terminal: Run the E2E test via `npm run test` or `npm run cy:open`
+7. Dev Container bash terminal: Run the E2E test via `pnpm run test` or `pnpm run cy:open`
 
 #### Running the tests from within one Docker container against the App running in another Docker container, similar to a CI/CD pipeline.
 
@@ -161,8 +169,8 @@ This approach may not be frequently used, but it's important to document it for 
 4. Specify `REMOTE_URL="elevation-app-server"` within `.env.e2e-test.local`
 5. Specify `PORT="5173"` within `.env.e2e-test.local`
 6. Second WSL terminal: `docker build --target development -t elevation-app-e2e-test .`
-7. First WSL terminal: `docker run -t --rm --network=elevation-app-network --name=elevation-app-server <image-id-from-step-2> npm run dev -- --host 0.0.0.0`. Note: In CI/CD this has to be detached, but in development it makes sense to be able to see output.
-8. Second WSL terminal: `docker run -t --rm --network=elevation-app-network <image-id-from-step-4> npm run test`
+7. First WSL terminal: `docker run -t --rm --network=elevation-app-network --name=elevation-app-server <image-id-from-step-2> pnpm run dev --host 0.0.0.0`. Note: In CI/CD this has to be detached, but in development it makes sense to be able to see output.
+8. Second WSL terminal: `docker run -t --rm --network=elevation-app-network <image-id-from-step-4> pnpm run test`
 
 ###### Production build
 
@@ -175,7 +183,7 @@ This might be uselful to debug something locally exactly as it happens in CI/CD 
 5. Specify `PORT="80"` within `.env.e2e-test.local`
 6. Second WSL terminal: `docker build --target development -t elevation-app-e2e-test .`
 7. First WSL terminal: `docker run -t --rm --network=elevation-app-network --name=elevation-app-server <image-id-from-step-2>`. Note: In CI/CD this has to be detached, but in development it makes sense to be able to see output.
-8. Second WSL terminal: `docker run -t --rm --network=elevation-app-network <image-id-from-step-4> npm run test`
+8. Second WSL terminal: `docker run -t --rm --network=elevation-app-network <image-id-from-step-4> pnpm run test`
 
 ## Debugging
 

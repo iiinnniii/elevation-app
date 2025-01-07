@@ -18,6 +18,8 @@ export default tseslint.config(
 			'dist',
 			'node_modules',
 			'package-lock.json',
+			'.pnpm-store',
+			'pnpm-lock.yaml',
 			'src/types/generated/schema.d.ts',
 			'Dockerfile',
 			'.dockerignore',

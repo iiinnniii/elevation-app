@@ -1,7 +1,7 @@
 {
 	"configurations": [
 		{
-			"name": "npm run dev",
+			"name": "pnpm run dev",
 			"request": "launch",
 			"runtimeArgs": [
 				"run",
@@ -10,7 +10,7 @@
 				"--host=0.0.0.0",
 				"--inspect-brk=9229"
 			],
-			"runtimeExecutable": "npm",
+			"runtimeExecutable": "pnpm",
 			"skipFiles": [
 				"<node_internals>/**"
 			],
