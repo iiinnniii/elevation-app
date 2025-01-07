@@ -23,8 +23,8 @@ default:
 variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
 
-.install_pnpm: &install_pnpm
-  # Define where pnpm should be installed. The install script below respects this environment variable.
+.install_pnpm:
+  &install_pnpm # Define where pnpm should be installed. The install script below respects this environment variable.
   - export PNPM_HOME="$(pwd)/.pnpm-store"
   # Add pnpm to the PATH
   - export PATH="$PNPM_HOME:$PATH"
@@ -82,7 +82,6 @@ build-docker-image-job:
   artifacts:
     paths:
       - elevation-app.tar
-  before_script: []
   script:
     - docker info
     - docker build --target production -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} .
@@ -98,7 +97,6 @@ e2e-test-job:
     DOCKER_TLS_CERTDIR: '/certs'
   services:
     - docker:24.0.7-dind
-  before_script: []
   script:
     - docker load -i elevation-app.tar
     - docker image ls
@@ -131,7 +129,6 @@ push-docker-image-job:
         - echo "$ROOT_CA_CERTIFICATE" > /usr/local/share/ca-certificates/ca.crt && update-ca-certificates && dockerd-entrypoint.sh || exit
   rules:
     - if: '$CI_COMMIT_REF_PROTECTED == "true"'
-  before_script: []
   script:
     - docker load -i elevation-app.tar
     - docker image ls
