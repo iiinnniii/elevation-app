@@ -10,9 +10,7 @@ RUN mv "$(which npm)" "$(which npm)-disabled"
 # Set working directory	
 WORKDIR /usr/src/app
 # Copy package files to install dependencies
-COPY ["package.json", "package-lock.json*", "./"]
-# Install dependencies using pnpm
-RUN pnpm install --frozen-lockfile
+COPY ["package.json", "package-lock.json*", "pnpm-lock.yaml", "./"]
 # Copy the rest of the application source code
 COPY . .
 # Install necessary packages for cypress
@@ -41,9 +39,19 @@ RUN rm -rf ./google-chrome-stable_current_amd64.deb
 EXPOSE 5173
 
 FROM base AS development
+# Install dependencies using pnpm
+RUN pnpm install --frozen-lockfile
+CMD ["/bin/bash"]
+
+FROM base AS dev_container
+# It makes no sense to execute `pnpm install` here or in `base`, because symlinks cannot points to different volumes
+# https://stackoverflow.com/questions/77099690/how-do-i-make-pnpm-work-as-intended-in-a-vscode-dev-container#answer-78019974
 CMD ["/bin/bash"]
 
 FROM base AS build
+# Install dependencies using pnpm
+RUN pnpm install --frozen-lockfile
+# Build
 RUN pnpm run build
 
 FROM nginx AS production

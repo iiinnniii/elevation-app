@@ -10,9 +10,10 @@ stages:
 .cache: &cache
   key:
     files:
-      - package-lock.json
+      - pnpm-lock.yaml
   paths:
     - node_modules
+    - .pnpm-store
     - cache/Cypress
   policy: pull
 
@@ -21,6 +22,8 @@ default:
 
 variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
+  PNPM_HOME: "/pnpm"
+  PATH: "$PNPM_HOME:$PATH"
 
 install-job:
   stage: install
@@ -31,13 +34,15 @@ install-job:
     policy: pull-push
   script:
     # Define where pnpm should be installed. The install script below respects this environment variable.
-    - export PNPM_HOME="/pnpm"
+    #- export PNPM_HOME="/pnpm"
     # Add pnpm to the PATH
-    - export PATH="$PNPM_HOME:$PATH"
+    #- export PATH="$PNPM_HOME:$PATH"
     # Install pnpm
     - wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
     # Use the `which npm` command to find the npm path and disable it
     - mv "$(which npm)" "$(which npm)-disabled"
+    # Set store-dir for pnmp
+    - pnpm config set store-dir .pnpm-store
     # Install project dependencies
     - pnpm install --frozen-lockfile
 
