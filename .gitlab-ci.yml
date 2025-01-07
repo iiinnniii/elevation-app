@@ -78,6 +78,8 @@ build-docker-image-job:
   artifacts:
     paths:
       - elevation-app.tar
+  before_script:
+    - echo "Global before_script does not execute for this job"
   script:
     - docker info
     - docker build --target production -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} .
