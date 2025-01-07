@@ -92,6 +92,8 @@ sudo rm -rf ~/playground/data-science-service-gmbh/elevation-app/node_modules
 code ~/playground/data-science-service-gmbh/elevation-app
 ```
 
+Also don't forget to check the following setting within `Settings > Resources > WSL Integration > Ubuntu` in Docker Desltop, in order to enable Docker within you WSL Distro.
+
 ## Launch Instructions
 
 ### Start via Dev Container (highly recommended)
