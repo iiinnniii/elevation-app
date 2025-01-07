@@ -43,6 +43,19 @@ install-job:
   before_script:
     - *install_pnpm
   script:
+    - echo "A little debugging if everything is fine"
+    - echo "Lets look into the root of the docker container, no /pnmp should be there"
+    - ls -la /
+    - echo "Lets look into the project directory .pnpm-store there?"
+    - ls -la /usr/src/app
+    - echo "Lets check the links in node_modules"
+    - ls -la /usr/src/app/node_modules/
+    - echo "Lets get the inode of the react hardlink"
+    - ls -li /usr/src/app/node_modules/.pnpm/react@19.0.0/node_modules/react | awk 'NR==3 {print $1}'
+    - echo "Lets cd into the root of the container"
+    - cd /
+    - echo "Lets check if everything is palletti"
+    - find . -inum $(ls -li /usr/src/app/node_modules/.pnpm/react@19.0.0/node_modules/react | awk 'NR==3 {print $1}')
     - pnpm install --frozen-lockfile
 
 # Note: The build job also performs type-checking
