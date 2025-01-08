@@ -8,6 +8,7 @@ import type { RootState } from '../../app/store';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { Location } from '../../types/schema';
 import type { Map } from 'leaflet';
+import 'immer'; // Fix for error TS2742: The inferred type of 'elevationDataSlice' cannot be named without a reference to '.pnpm/immer@10.1.1/node_modules/immer'. This is likely not portable. A type annotation is necessary.
 
 export interface ElevationDataState {
 	location: Location;
