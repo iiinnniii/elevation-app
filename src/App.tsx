@@ -8,11 +8,7 @@ import { fetchElevationDataAsync } from './features/elevationData/elevationDataS
 import { Map } from './features/elevationData/components/Map';
 import { LocationForm } from './features/elevationData/components/LocationForm';
 
-// context
-import { MapContext } from './context/map-context';
-
 // hooks
-import { useContext } from 'react';
 import { useAppSelector, useAppDispatch } from './app/hooks';
 
 // selectors
@@ -30,14 +26,12 @@ import { convertLatLngToLocation } from './features/elevationData/utils/function
 
 const App = () => {
 	const dispatch = useAppDispatch();
-	const mapContext = useContext(MapContext);
 	const location = useAppSelector(selectLocation);
 	const elevation = useAppSelector(selectElevation);
 
 	const handleSubmit = (location: Location) => {
 		dispatch(setLocation(location));
 		dispatch(fetchElevationDataAsync(location));
-		mapContext.map?.flyTo(location);
 	};
 
 	const handleClick = (latLng: LatLng) => {

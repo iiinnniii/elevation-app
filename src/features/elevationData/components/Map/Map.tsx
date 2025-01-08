@@ -9,7 +9,7 @@ import 'leaflet/dist/leaflet.css';
 
 // hooks
 import { useContext, useEffect } from 'react';
-import { useMapEvents } from 'react-leaflet';
+import { useMapEvents, useMap } from 'react-leaflet';
 
 // types
 import type { LatLng, LatLngExpression } from 'leaflet';
@@ -17,6 +17,11 @@ import type { LatLng, LatLngExpression } from 'leaflet';
 interface MapProps {
 	center: LatLngExpression;
 	onClick?: (location: LatLng) => void;
+}
+
+interface ChangeViewProps {
+	center: LatLngExpression;
+	zoom: number;
 }
 
 export const Map = ({
@@ -42,6 +47,12 @@ export const Map = ({
 		return null;
 	};
 
+	const ChangeView = ({ center, zoom }: ChangeViewProps) => {
+		const map = useMap();
+		map.flyTo(center, zoom);
+		return null;
+	};
+
 	return (
 		<>
 			<MapContainer
@@ -49,6 +60,7 @@ export const Map = ({
 				zoom={13}
 				style={{ height: '400px', width: '100%' }}
 			>
+				<ChangeView center={center} zoom={13} />
 				<TileLayer
 					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 					url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
