@@ -1,14 +1,10 @@
 // components
 import { MapContainer, TileLayer } from 'react-leaflet';
 
-// context
-import { MapContext } from '../../../../context/map-context';
-
 // css
 import 'leaflet/dist/leaflet.css';
 
 // hooks
-import { useContext, useEffect } from 'react';
 import { useMapEvents, useMap, Marker } from 'react-leaflet';
 
 // types
@@ -28,8 +24,6 @@ export const Map = ({
 	center = { lat: 51.505, lng: -0.09 },
 	onClick,
 }: MapProps) => {
-	const mapContext = useContext(MapContext);
-
 	const MapEvents = () => {
 		const map = useMapEvents({
 			click(e) {
@@ -39,11 +33,6 @@ export const Map = ({
 				}
 			},
 		});
-		useEffect(() => {
-			if (mapContext.map === null) {
-				mapContext.setMap(map);
-			}
-		}, []);
 		return null;
 	};
 
