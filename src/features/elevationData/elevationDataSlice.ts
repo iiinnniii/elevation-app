@@ -1,10 +1,11 @@
 // import { createAsyncThunk } from '@reduxjs/toolkit';
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 // import { AppThunk } from '../../app/store';
-import { RootState } from '../../app/store';
 // import { fetchElevationData } from './elevationDataAPI';
 
 // types
+import type { RootState } from '../../app/store';
+import type { PayloadAction } from '@reduxjs/toolkit';
 import type { Location } from '../../types/schema';
 import type { Map } from 'leaflet';
 

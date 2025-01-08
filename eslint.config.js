@@ -35,6 +35,7 @@ export default tseslint.config(
 			'cypress/fixtures',
 			'cypress/support',
 			'nginx.conf',
+			'.npmrc',
 		],
 	},
 	// Common config for all JavaScript and TypeScript files
@@ -100,6 +101,16 @@ export default tseslint.config(
 					],
 				},
 			],
+		},
+	},
+	// Common config for all Browser specific TypeScript files
+	{
+		files: ['src/**/*.{ts,tsx}'],
+		languageOptions: {
+			globals: {
+				...globals.serviceworker,
+				...globals.browser,
+			},
 		},
 	},
 	// React specific
