@@ -2,9 +2,9 @@ stages:
   - install
   - build
   - lint
-  #- test
+  - test:unit
   - build-docker-image
-  - e2e
+  - test:e2e
   - push-docker-image
 
 .cache: &cache
@@ -69,6 +69,18 @@ eslint-job:
   script:
     - pnpm run lint
 
+unit-test-job:
+  stage: test:unit
+  tags:
+    - elevation-app
+  cache:
+    <<: *cache
+    policy: pull
+  before_script:
+    - *install_pnpm
+  script:
+    - pnpm run test:unit
+
 build-docker-image-job:
   stage: build-docker-image
   tags:
@@ -88,7 +100,7 @@ build-docker-image-job:
     - docker save -o elevation-app.tar ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
 
 e2e-test-job:
-  stage: e2e
+  stage: test:e2e
   tags:
     - elevation-app
   image: docker:24.0.7
@@ -110,7 +122,7 @@ e2e-test-job:
     - docker build --target development -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e .
     - docker network create elevation-app-network
     - docker run -d --rm --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
-    - docker run -t --rm --network=elevation-app-network ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e pnpm run test
+    - docker run -t --rm --network=elevation-app-network ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e pnpm run test:e2e
 
 push-docker-image-job:
   stage: push-docker-image
