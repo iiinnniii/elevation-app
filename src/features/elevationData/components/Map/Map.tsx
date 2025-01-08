@@ -9,7 +9,7 @@ import 'leaflet/dist/leaflet.css';
 
 // hooks
 import { useContext, useEffect } from 'react';
-import { useMapEvents, useMap } from 'react-leaflet';
+import { useMapEvents, useMap, Marker } from 'react-leaflet';
 
 // types
 import type { LatLng, LatLngExpression } from 'leaflet';
@@ -61,6 +61,7 @@ export const Map = ({
 				style={{ height: '400px', width: '100%' }}
 			>
 				<ChangeView center={center} zoom={13} />
+				<Marker position={center}></Marker>
 				<TileLayer
 					attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
 					url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
