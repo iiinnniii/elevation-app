@@ -4,17 +4,22 @@ import { useState } from 'react';
 // types
 import type { FormEvent } from 'react';
 
-const LocationForm = ({
-	setLocation,
-}: {
-	setLocation: (location: { lat: number; lng: number }) => void;
-}) => {
+export interface Location {
+	lat: number;
+	lng: number;
+}
+
+interface LocationFormProps {
+	onSubmit: (location: Location) => void;
+}
+
+export const LocationForm = ({ onSubmit }: LocationFormProps) => {
 	const [lat, setLat] = useState('');
 	const [lng, setLng] = useState('');
 
 	const handleSubmit = (e: FormEvent) => {
 		e.preventDefault();
-		setLocation({ lat: parseFloat(lat), lng: parseFloat(lng) });
+		onSubmit({ lat: parseFloat(lat), lng: parseFloat(lng) });
 	};
 
 	return (
@@ -39,5 +44,3 @@ const LocationForm = ({
 		</form>
 	);
 };
-
-export default LocationForm;

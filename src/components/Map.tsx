@@ -1,19 +1,25 @@
 import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
-import { useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 
-const Map = ({
-	setLocation,
-}: {
-	setLocation: (location: { lat: number; lng: number }) => void;
-}) => {
-	const [position, setPosition] = useState({ lat: 51.505, lng: -0.09 });
+// types
+import type { LatLng, LatLngExpression } from 'leaflet';
 
+interface MapProps {
+	center: LatLngExpression;
+	onClick?: (location: LatLng) => void;
+}
+
+export const Map = ({
+	center = { lat: 51.505, lng: -0.09 },
+	onClick,
+}: MapProps) => {
 	const MapEvents = () => {
-		useMapEvents({
+		const map = useMapEvents({
 			click(e) {
-				setPosition(e.latlng);
-				setLocation(e.latlng);
+				map.flyTo(e.latlng);
+				if (onClick) {
+					onClick(e.latlng);
+				}
 			},
 		});
 		return null;
@@ -22,7 +28,7 @@ const Map = ({
 	return (
 		<>
 			<MapContainer
-				center={position}
+				center={center}
 				zoom={13}
 				style={{ height: '400px', width: '100%' }}
 			>
@@ -35,5 +41,3 @@ const Map = ({
 		</>
 	);
 };
-
-export default Map;

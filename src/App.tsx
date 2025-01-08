@@ -1,11 +1,16 @@
 import { useState } from 'react';
-import Map from './components/Map';
-import LocationForm from './components/LocationForm';
+import { Map } from './components/Map';
+import { LocationForm } from './components/LocationForm';
+
+// types
+import type { Location } from './components/LocationForm';
+import type { LatLng } from 'leaflet';
 
 const App = () => {
-	const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
-		null,
-	);
+	const [location, setLocation] = useState<Location>({
+		lat: 51.505,
+		lng: -0.09,
+	});
 	const [elevation, setElevation] = useState<number | null>(null);
 
 	const fetchElevation = async (lat: number, lng: number) => {
@@ -28,16 +33,21 @@ const App = () => {
 		}
 	};
 
-	const handleLocationChange = (loc: { lat: number; lng: number }) => {
-		setLocation(loc);
-		fetchElevation(loc.lat, loc.lng);
+	const handleSubmit = (location: Location) => {
+		setLocation(location);
+		fetchElevation(location.lat, location.lng);
+	};
+
+	const handleClick = (location: LatLng) => {
+		setLocation(location);
+		fetchElevation(location.lat, location.lng);
 	};
 
 	return (
 		<div>
 			<h1>Elevation Data</h1>
-			<LocationForm setLocation={handleLocationChange} />
-			<Map setLocation={handleLocationChange} />
+			<LocationForm onSubmit={handleSubmit} />
+			<Map center={location} onClick={handleClick} />
 			{location && (
 				<div>
 					<p>Latitude: {location.lat}</p>
