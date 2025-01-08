@@ -1,6 +1,8 @@
-// A mock function to mimic making an async request for data
-export function fetchElevationData(amount = 1) {
-	return new Promise<{ data: number }>((resolve) =>
-		setTimeout(() => resolve({ data: amount }), 500),
+// types
+import type { Location } from '../../types/schema';
+
+export const fetchElevationData = async (location: Location) => {
+	return fetch(
+		`/api/v1/test-dataset?locations=${location.lat},${location.lng}`,
 	);
-}
+};
