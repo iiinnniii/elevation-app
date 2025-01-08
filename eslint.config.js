@@ -35,6 +35,7 @@ export default tseslint.config(
 			'cypress/fixtures',
 			'cypress/support',
 			'nginx.conf',
+			'.npmrc',
 		],
 	},
 	// Common config for all JavaScript and TypeScript files
@@ -53,7 +54,6 @@ export default tseslint.config(
 			'@stylistic/js': pluginStylisticJs,
 		},
 		rules: {
-			'@stylistic/js/indent': ['warn', 'tab', { SwitchCase: 1 }],
 			'@stylistic/js/comma-dangle': [
 				'warn',
 				{
@@ -101,6 +101,16 @@ export default tseslint.config(
 					],
 				},
 			],
+		},
+	},
+	// Common config for all Browser specific TypeScript files
+	{
+		files: ['src/**/*.{ts,tsx}'],
+		languageOptions: {
+			globals: {
+				...globals.serviceworker,
+				...globals.browser,
+			},
 		},
 	},
 	// React specific

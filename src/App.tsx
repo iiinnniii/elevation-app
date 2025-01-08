@@ -1,43 +1,57 @@
-import { useState } from 'react';
-import Map from './components/Map';
-import LocationForm from './components/LocationForm';
+// actions
+import { setLocation } from './features/elevationData/elevationDataSlice';
+
+// actions async
+import { fetchElevationDataAsync } from './features/elevationData/elevationDataSlice';
+
+// compontents
+import { Map } from './features/elevationData/components/Map';
+import { LocationForm } from './features/elevationData/components/LocationForm';
+
+// hooks
+import { useAppSelector, useAppDispatch } from './app/hooks';
+
+// selectors
+import {
+	selectLocation,
+	selectElevation,
+} from './features/elevationData/elevationDataSlice';
+
+// types
+import type { Location } from './types/schema';
+import type { LatLng } from 'leaflet';
+
+// utils
+import { convertLatLngToLocation } from './features/elevationData/utils/functions';
+import { useEffect } from 'react';
 
 const App = () => {
-	const [location, setLocation] = useState<{ lat: number; lng: number } | null>(
-		null,
-	);
-	const [elevation, setElevation] = useState<number | null>(null);
+	const dispatch = useAppDispatch();
+	const location = useAppSelector(selectLocation);
+	const elevation = useAppSelector(selectElevation);
 
-	const fetchElevation = async (lat: number, lng: number) => {
-		try {
-			const response = await fetch(
-				`/api/v1/test-dataset?locations=${lat},${lng}`,
-			);
-			console.log(response);
-			if (!response.ok) {
-				console.error(`HTTP error! Status: ${response.status}`); // Handle the error accordingly
-			}
-			if (!response.ok) {
-				throw new Error('Network response was not ok');
-			}
-			const data = await response.json();
-			console.log(data);
-			setElevation(data.results[0].elevation);
-		} catch (error) {
-			console.error('Error fetching elevation:', error);
+	const handleSubmit = (location: Location) => {
+		dispatch(setLocation(location));
+		dispatch(fetchElevationDataAsync(location));
+	};
+
+	const handleClick = (latLng: LatLng) => {
+		const location = convertLatLngToLocation(latLng);
+		dispatch(setLocation(location));
+		dispatch(fetchElevationDataAsync(location));
+	};
+
+	useEffect(() => {
+		if (elevation === null) {
+			dispatch(fetchElevationDataAsync(location));
 		}
-	};
-
-	const handleLocationChange = (loc: { lat: number; lng: number }) => {
-		setLocation(loc);
-		fetchElevation(loc.lat, loc.lng);
-	};
+	}, [elevation]);
 
 	return (
 		<div>
 			<h1>Elevation Data</h1>
-			<LocationForm setLocation={handleLocationChange} />
-			<Map setLocation={handleLocationChange} />
+			<LocationForm onSubmit={handleSubmit} />
+			<Map center={location} onClick={handleClick} />
 			{location && (
 				<div>
 					<p>Latitude: {location.lat}</p>
