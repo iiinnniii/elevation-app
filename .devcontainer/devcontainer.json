@@ -33,7 +33,8 @@
 				"esbenp.prettier-vscode",
 				"redhat.vscode-yaml",
 				"mhutchie.git-graph",
-				"eamodio.gitlens"
+				"eamodio.gitlens",
+				"vitest.explorer"
 			]
 		}
 	},
