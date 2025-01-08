@@ -15,7 +15,6 @@ RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(whic
 # Disable npm to enforce pnpm usage for package management
 RUN mv "$(which npm)" "$(which npm)-disabled"
 
-
 # Update package lists and install gnupg and pinentry-gtk2 in one step
 RUN apt-get update && apt-get install -y \
     gnupg \
