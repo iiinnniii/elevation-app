@@ -1,14 +1,14 @@
-// actions
-import { setMap } from '../../elevationDataSlice';
-
 // components
 import { MapContainer, TileLayer } from 'react-leaflet';
+
+// context
+import { MapContext } from '../../../../context/map-context';
 
 // css
 import 'leaflet/dist/leaflet.css';
 
 // hooks
-import { useAppDispatch } from '../../../../app/hooks';
+import { useContext, useEffect } from 'react';
 import { useMapEvents } from 'react-leaflet';
 
 // types
@@ -23,7 +23,7 @@ export const Map = ({
 	center = { lat: 51.505, lng: -0.09 },
 	onClick,
 }: MapProps) => {
-	const dispatch = useAppDispatch();
+	const mapContext = useContext(MapContext);
 
 	const MapEvents = () => {
 		const map = useMapEvents({
@@ -34,7 +34,11 @@ export const Map = ({
 				}
 			},
 		});
-		dispatch(setMap(map));
+		useEffect(() => {
+			if (mapContext.map === null) {
+				mapContext.setMap(map);
+			}
+		}, []);
 		return null;
 	};
 

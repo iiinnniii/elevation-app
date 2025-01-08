@@ -7,12 +7,10 @@ import { fetchElevationData } from './elevationDataAPI';
 import type { RootState } from '../../app/store';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { Location } from '../../types/schema';
-import type { Map } from 'leaflet';
 import 'immer'; // Fix for error TS2742: The inferred type of 'elevationDataSlice' cannot be named without a reference to '.pnpm/immer@10.1.1/node_modules/immer'. This is likely not portable. A type annotation is necessary.
 
 export interface ElevationDataState {
 	location: Location;
-	map: Map | null;
 	elevation: number | null;
 	status: 'idle' | 'loading' | 'failed';
 }
@@ -20,7 +18,6 @@ export interface ElevationDataState {
 const initialState: ElevationDataState = {
 	location: { lat: 51.505, lng: -0.09 },
 	elevation: null,
-	map: null,
 	status: 'idle',
 };
 
@@ -71,9 +68,6 @@ export const elevationDataSlice = createSlice({
 		setLocation: (state, action: PayloadAction<Location>) => {
 			state.location = action.payload;
 		},
-		setMap: (state, action: PayloadAction<Map>) => {
-			state.map = action.payload;
-		},
 		setElevation: (state, action: PayloadAction<number>) => {
 			state.elevation = action.payload;
 		},
@@ -95,15 +89,13 @@ export const elevationDataSlice = createSlice({
 	},
 });
 
-export const { setLocation, setMap, setElevation } = elevationDataSlice.actions;
+export const { setLocation, setElevation } = elevationDataSlice.actions;
 
 // The function below is called a selector and allows us to select a value from
 // the state. Selectors can also be defined inline where they're used instead of
 // in the slice file. For example: `useSelector((state: RootState) => state.elevationData.value)`
 export const selectLocation = (state: RootState) =>
 	state.elevationData.location;
-
-export const selectMap = (state: RootState) => state.elevationData.map;
 
 export const selectElevation = (state: RootState) =>
 	state.elevationData.elevation;
