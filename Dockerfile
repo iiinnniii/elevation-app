@@ -1,4 +1,4 @@
-FROM node:22.12.0 AS base
+FROM cypress/browsers:node-22.12.0-chrome-131.0.6778.139-1-ff-133.0.3-edge-131.0.2903.99-1 AS base
 
 # Set the working directory inside the container
 WORKDIR /usr/src/app
@@ -15,31 +15,13 @@ RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(whic
 # Disable npm to enforce pnpm usage for package management
 RUN mv "$(which npm)" "$(which npm)-disabled"
 
-# Install necessary system packages for Cypress to run
+# Update package lists and install gnupg and pinentry-gtk2 in one step
 RUN apt-get update && apt-get install -y \
-	libgtk2.0-0 \
-	libgtk-3-0 \
-	libgbm-dev \
-	libnotify-dev \
-	libnss3 \
-	libxss1 \
-	libasound2 \
-	libxtst6 \
-	xauth \
-	xvfb
+    gnupg \
+    pinentry-gtk2
 
-# Install Google Chrome browser for end-to-end testing (Cypress)
-RUN apt-get install -y wget
-RUN wget -q https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-RUN apt-get install -y ./google-chrome-stable_current_amd64.deb
-
-# Install Firefox browser for end-to-end testing (Cypress)
-RUN echo "deb http://deb.debian.org/debian/ unstable main contrib non-free" >> /etc/apt/sources.list.d/debian.list
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends firefox
-
-# Clean up the downloaded Chrome .deb file to reduce the image size
-RUN rm -rf ./google-chrome-stable_current_amd64.deb
+# Configure gpg-agent to use pinentry-x11
+RUN echo "pinentry-program /usr/bin/pinentry-x11" >> ~/.gnupg/gpg-agent.conf #pinentry-gtk-2 is ok too
 
 # Copy package files (package.json, lock files) to the container
 COPY ["package.json", "package-lock.json*", "pnpm-lock.yaml", "./"]

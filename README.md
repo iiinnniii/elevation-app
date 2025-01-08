@@ -59,9 +59,11 @@ docker volume create ca_certificates
 
 2. Copy `rootCA.crt` into the `ca_certificates` Docker volume to enable encrypted communication (HTTPS) with GitLab (e.g., for performing a `git push`). The path to the `ca_certificates` on Windows is `\\wsl.localhost\docker-desktop-data\data\docker\volumes\ca_certificates\_data`.
 
-3. Copy your `gpg` key into your local `WSL 2` instance and import it into `gpg`. Then, copy the `~/.gnupg` folder from this `WSL 2` instance into the `gpg_files` Docker volume. The path to the `gpg_files` on Windows is `\\wsl.localhost\docker-desktop-data\data\docker\volumes\gpg_files\_data`. This is required to perform signed commits within the Dev Container, as there is currently no better bug-free method.
+3. Copy your encrypted `gpg` secret key into your local `WSL 2` instance and import it into `gpg`, or alternatively, generate a new key. Then copy the key into the `gpg_files` Docker volume, naming it `encrypted_secreet_gpg_key.asc`. The path to the `gpg_files` on Windows is `\\wsl.localhost\docker-desktop-data\data\docker\volumes\gpg_files\_data`. This is required to perform signed commits within the Dev Container, as there is currently no better working method.
 
 The `postStartCommand` within `.devcontainer/devcontainer.json` handles the remaining setup to ensure everything works smoothly.
+
+Upon starting the Dev Container, you'll be prompted to enter the password for the encrypted GPG key. This is necessary because GPG within the container needs to import the key.
 
 Please also review and follow the OS-specific requirements below.
 
