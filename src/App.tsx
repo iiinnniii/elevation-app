@@ -23,6 +23,7 @@ import type { LatLng } from 'leaflet';
 
 // utils
 import { convertLatLngToLocation } from './features/elevationData/utils/functions';
+import { useEffect } from 'react';
 
 const App = () => {
 	const dispatch = useAppDispatch();
@@ -39,6 +40,12 @@ const App = () => {
 		dispatch(setLocation(location));
 		dispatch(fetchElevationDataAsync(location));
 	};
+
+	useEffect(() => {
+		if (elevation === null) {
+			dispatch(fetchElevationDataAsync(location));
+		}
+	}, [elevation]);
 
 	return (
 		<div>
