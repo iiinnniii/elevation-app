@@ -53,7 +53,6 @@ export default tseslint.config(
 			'@stylistic/js': pluginStylisticJs,
 		},
 		rules: {
-			'@stylistic/js/indent': ['warn', 'tab', { SwitchCase: 1 }],
 			'@stylistic/js/comma-dangle': [
 				'warn',
 				{

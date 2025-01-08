@@ -3,11 +3,7 @@ import { useState } from 'react';
 
 // types
 import type { FormEvent } from 'react';
-
-export interface Location {
-	lat: number;
-	lng: number;
-}
+import type { Location } from '../../../../types/schema';
 
 interface LocationFormProps {
 	onSubmit: (location: Location) => void;

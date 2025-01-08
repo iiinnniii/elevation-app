@@ -1,17 +1,32 @@
-import { useState } from 'react';
-import { Map } from './components/Map';
-import { LocationForm } from './components/LocationForm';
+// actions
+import {
+	setLocation,
+	setElevation,
+} from './features/elevationData/elevationDataSlice';
+
+// compontents
+import { Map } from './features/elevationData/components/Map';
+import { LocationForm } from './features/elevationData/components/LocationForm';
+
+// hooks
+import { useAppSelector, useAppDispatch } from './app/hooks';
+
+// selectors
+import {
+	selectMap,
+	selectLocation,
+	selectElevation,
+} from './features/elevationData/elevationDataSlice';
 
 // types
-import type { Location } from './components/LocationForm';
+import type { Location } from './types/schema';
 import type { LatLng } from 'leaflet';
 
 const App = () => {
-	const [location, setLocation] = useState<Location>({
-		lat: 51.505,
-		lng: -0.09,
-	});
-	const [elevation, setElevation] = useState<number | null>(null);
+	const dispatch = useAppDispatch();
+	const map = useAppSelector(selectMap);
+	const location = useAppSelector(selectLocation);
+	const elevation = useAppSelector(selectElevation);
 
 	const fetchElevation = async (lat: number, lng: number) => {
 		try {
@@ -27,19 +42,20 @@ const App = () => {
 			}
 			const data = await response.json();
 			console.log(data);
-			setElevation(data.results[0].elevation);
+			dispatch(setElevation(data.results[0].elevation));
 		} catch (error) {
 			console.error('Error fetching elevation:', error);
 		}
 	};
 
 	const handleSubmit = (location: Location) => {
-		setLocation(location);
+		dispatch(setLocation(location));
 		fetchElevation(location.lat, location.lng);
+		map?.flyTo(location);
 	};
 
 	const handleClick = (location: LatLng) => {
-		setLocation(location);
+		dispatch(setLocation(location));
 		fetchElevation(location.lat, location.lng);
 	};
 

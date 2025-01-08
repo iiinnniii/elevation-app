@@ -1,5 +1,15 @@
-import { MapContainer, TileLayer, useMapEvents } from 'react-leaflet';
+// actions
+import { setMap } from '../../elevationDataSlice';
+
+// components
+import { MapContainer, TileLayer } from 'react-leaflet';
+
+// css
 import 'leaflet/dist/leaflet.css';
+
+// hooks
+import { useAppDispatch } from '../../../../app/hooks';
+import { useMapEvents } from 'react-leaflet';
 
 // types
 import type { LatLng, LatLngExpression } from 'leaflet';
@@ -13,6 +23,8 @@ export const Map = ({
 	center = { lat: 51.505, lng: -0.09 },
 	onClick,
 }: MapProps) => {
+	const dispatch = useAppDispatch();
+
 	const MapEvents = () => {
 		const map = useMapEvents({
 			click(e) {
@@ -22,6 +34,7 @@ export const Map = ({
 				}
 			},
 		});
+		dispatch(setMap(map));
 		return null;
 	};
 
