@@ -111,9 +111,9 @@ e2e-test-job:
     - docker:24.0.7-dind
   artifacts:
     paths:
-      - /usr/src/app/cypress/screenshots/
+      - cypress/screenshots/
       - cypress/snapshots/
-      - /usr/src/app/cypress/videos/
+      - cypress/videos/
     when: always
   script:
     - docker load -i elevation-app.tar
@@ -127,8 +127,16 @@ e2e-test-job:
     - echo "CI_COMMIT_SHA ${CI_COMMIT_SHA}"
     - docker build --target development -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e .
     - docker network create elevation-app-network
-    - docker run -d --rm --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
-    - docker run -t --rm --network=elevation-app-network ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e pnpm run test:e2e
+    - docker run -d --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
+    - docker run -t --network=elevation-app-network --name=elevation-app-tester ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e pnpm run test:e2e
+    - mkdir -p cypress/screenshots cypress/snapshots cypress/videos
+    - docker cp -rf elevation-app-tester:/usr/src/app/cypress/screenshots ./cypress/screenshots
+    - docker cp elevation-app-tester:/usr/src/app/cypress/snapshots ./cypress/snapshots
+    - docker cp elevation-app-tester:/usr/src/app/cypress/videos ./cypress/videos
+    - docker stop elevation-app-server
+    - docker stop elevation-app-tester
+    - docker rm elevation-app-server
+    - docker rm elevation-app-tester
 
 push-docker-image-job:
   stage: push-docker-image
