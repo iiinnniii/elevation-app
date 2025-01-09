@@ -10,6 +10,7 @@ import pluginChaiFriendly from 'eslint-plugin-chai-friendly';
 import pluginMocha from 'eslint-plugin-mocha';
 import pluginVitest from 'eslint-plugin-vitest';
 import pluginReactRefresh from 'eslint-plugin-react-refresh';
+import pluginTailwind from 'eslint-plugin-tailwindcss';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
@@ -120,6 +121,7 @@ export default tseslint.config(
 			pluginReact.configs.flat.recommended,
 			pluginReact.configs.flat['jsx-runtime'],
 			pluginReactRefresh.configs.vite,
+			...pluginTailwind.configs['flat/recommended'],
 		],
 		settings: {
 			react: {

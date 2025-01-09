@@ -44,11 +44,7 @@ export const Map = ({
 
 	return (
 		<>
-			<MapContainer
-				center={center}
-				zoom={13}
-				style={{ height: '400px', width: '100%' }}
-			>
+			<MapContainer center={center} zoom={13} className='mt-4 h-[425px] w-full'>
 				<ChangeView center={center} zoom={13} />
 				<Marker position={center}></Marker>
 				<TileLayer
