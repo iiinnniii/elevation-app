@@ -5,9 +5,10 @@ import { setLocation } from './features/elevationData/elevationDataSlice';
 import { fetchElevationDataAsync } from './features/elevationData/elevationDataSlice';
 
 // compontents
-import { Map } from './features/elevationData/components/Map';
-import { LocationForm } from './features/elevationData/components/LocationForm';
 import { H1 } from './shared/components/H1';
+import { LocationForm } from './features/elevationData/components/LocationForm';
+import { Map } from './features/elevationData/components/Map';
+import { Elevation } from './features/elevationData/components/Elevation';
 
 // hooks
 import { useAppSelector, useAppDispatch } from './app/hooks';
@@ -53,15 +54,7 @@ const App = () => {
 			<H1>Elevation Data</H1>
 			<LocationForm onSubmit={handleSubmit} />
 			<Map center={location} onClick={handleClick} />
-			{location && (
-				<div className='mt-2'>
-					<p>Latitude: {location.lat}</p>
-					<p>Longitude: {location.lng}</p>
-					<p>
-						{`Elevation: ${elevation !== null ? `${elevation} meters` : 'Loading...'}`}
-					</p>
-				</div>
-			)}
+			<Elevation location={location} elevation={elevation} />
 		</div>
 	);
 };
