@@ -131,10 +131,10 @@ e2e-test-job:
     - docker run -d --network=elevation-app-network --name=elevation-app-tester ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e pnpm run test:e2e
     # FOR NOT MAKE THE TEST CONTAINER DETACHED JUST FOR NOW WHILE DEBUGGING
     - mkdir -p cypress/screenshots cypress/snapshots cypress/videos
+    - sleep 2d
     - docker cp elevation-app-tester:/usr/src/app/cypress/screenshots ./cypress/screenshots
     - docker cp elevation-app-tester:/usr/src/app/cypress/snapshots ./cypress/snapshots
     - docker cp elevation-app-tester:/usr/src/app/cypress/videos ./cypress/videos
-    - sleep 2d
     - docker stop elevation-app-server
     - docker stop elevation-app-tester
     - docker rm elevation-app-server
