@@ -111,9 +111,9 @@ e2e-test-job:
     - docker:24.0.7-dind
   artifacts:
     paths:
-      - cypress/screenshots/
+      - /usr/src/app/cypress/screenshots/
       - cypress/snapshots/
-      - cypress/videos/
+      - /usr/src/app/cypress/videos/
     when: always
   script:
     - docker load -i elevation-app.tar
