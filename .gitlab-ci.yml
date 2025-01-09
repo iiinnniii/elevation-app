@@ -109,6 +109,11 @@ e2e-test-job:
     DOCKER_TLS_CERTDIR: '/certs'
   services:
     - docker:24.0.7-dind
+  artifacts:
+    paths:
+      - cypress/screenshots
+      - cypress/snapshots
+      - cypress/videos
   script:
     - docker load -i elevation-app.tar
     - docker image ls
