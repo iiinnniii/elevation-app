@@ -7,6 +7,7 @@ import { fetchElevationDataAsync } from './features/elevationData/elevationDataS
 // compontents
 import { Map } from './features/elevationData/components/Map';
 import { LocationForm } from './features/elevationData/components/LocationForm';
+import { H1 } from './shared/components/H1';
 
 // hooks
 import { useAppSelector, useAppDispatch } from './app/hooks';
@@ -49,11 +50,11 @@ const App = () => {
 
 	return (
 		<div>
-			<h1>Elevation Data</h1>
+			<H1>Elevation Data</H1>
 			<LocationForm onSubmit={handleSubmit} />
 			<Map center={location} onClick={handleClick} />
 			{location && (
-				<div>
+				<div className='mt-2'>
 					<p>Latitude: {location.lat}</p>
 					<p>Longitude: {location.lng}</p>
 					<p>

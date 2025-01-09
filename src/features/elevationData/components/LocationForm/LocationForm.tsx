@@ -1,8 +1,12 @@
+// components
+import { Input } from '../../../../shared/components/Input';
+import { ActionButton } from '../../../../shared/components/ActionButton';
+
 // hooks
 import { useState } from 'react';
 
 // types
-import type { FormEvent } from 'react';
+import type { ChangeEvent, FormEvent } from 'react';
 import type { Location } from '../../../../types/schema';
 
 interface LocationFormProps {
@@ -19,24 +23,30 @@ export const LocationForm = ({ onSubmit }: LocationFormProps) => {
 	};
 
 	return (
-		<form onSubmit={handleSubmit} className='mt-2'>
-			<label>
-				Latitude:
-				<input
-					type='text'
-					value={lat}
-					onChange={(e) => setLat(e.target.value)}
-				/>
-			</label>
-			<label>
+		<form onSubmit={handleSubmit} className='mt-5'>
+			<label htmlFor='latitude'>Latitude:</label>
+			<Input
+				name='latitude'
+				type='number'
+				value={lat}
+				onChange={(e: ChangeEvent<HTMLInputElement>) => setLat(e.target.value)}
+				required
+				className='ml-2'
+			/>
+			<label htmlFor='longitude' className='ml-2'>
 				Longitude:
-				<input
-					type='text'
-					value={lng}
-					onChange={(e) => setLng(e.target.value)}
-				/>
 			</label>
-			<button type='submit'>Get Elevation</button>
+			<Input
+				name='longitude'
+				type='number'
+				value={lng}
+				onChange={(e: ChangeEvent<HTMLInputElement>) => setLng(e.target.value)}
+				required
+				className='ml-2'
+			/>
+			<ActionButton type='submit' className='ml-2'>
+				Get Elevation
+			</ActionButton>
 		</form>
 	);
 };
