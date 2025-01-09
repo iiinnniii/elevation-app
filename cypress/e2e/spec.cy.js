@@ -36,4 +36,27 @@ describe('Map Click Elevation Test', function () {
 			cy.log('Paragraph text after fetch:', p.text());
 		});
 	});
+
+	it('should fill inputs, press button, and match screenshot', function () {
+		cy.intercept('GET', '/api/v1/test-dataset*', (req) => {
+			req.reply({
+				statusCode: 200,
+				body: { results: [{ elevation: 300 }] },
+			});
+		}).as('fetchElevation');
+
+		// Enter values into the inputs
+		cy.get('input[name="latitude"]').type('40'); // Replace with your input selector
+		cy.get('input[name="longitude"]').type('4'); // Replace with your input selector
+
+		// Press the button
+		cy.get('button[type="submit"]').click(); // Replace with your button selector
+
+		// Wait for the UI to update, because of the aninmation (animation might be slow in cypress)
+		// eslint-disable-next-line cypress/no-unnecessary-waiting
+		cy.wait(20000); // Adjust the wait time if needed
+
+		// Take a screenshot and compare with the expected screenshot
+		cy.get('#root').matchImageSnapshot();
+	});
 });

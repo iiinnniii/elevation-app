@@ -35,6 +35,7 @@ export default tseslint.config(
 			'cache',
 			'cypress/fixtures',
 			'cypress/support',
+			'cypress/snapshots',
 			'nginx.conf',
 			'.npmrc',
 		],
