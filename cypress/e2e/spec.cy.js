@@ -1,8 +1,3 @@
-// import dotenv from 'dotenv';
-
-// dotenv.config({ path: './.env.e2e-test.local' });
-// dotenv.config({ path: './.env.e2e-test.ci' });
-
 const remoteURL = `http://${Cypress.env('REMOTE_URL')}:${Cypress.env('PORT')}/`; // "localhost" | "host.docker.internal" | "elevation-app-server"
 
 describe('Map Click Elevation Test', function () {
@@ -18,7 +13,7 @@ describe('Map Click Elevation Test', function () {
 		// eslint-disable-next-line cypress/no-unnecessary-waiting
 		cy.wait(2000);
 
-		// Assert that the elevation text is displayed and not loading
+		// Assert that the correct elevation text is displayed and not loading
 		cy.get('[data-cy="elevation"]')
 			.should('not.contain', 'Loading...')
 			.and('have.text', 'Elevation: 89.10835266113281 meters');
@@ -32,7 +27,7 @@ describe('Map Click Elevation Test', function () {
 		// Click on the map at specific coordinates
 		cy.get('.leaflet-container').click(300, 200); // Adjust coordinates as needed
 
-		// Assert that the elevation text is displayed and not loading
+		// Assert that the correct elevation text for the new location is displayed and not loading
 		cy.get('[data-cy="elevation"]')
 			.should('not.contain', 'Elevation: 89.10835266113281 meters')
 			.should('not.contain', 'Loading...')
@@ -75,7 +70,7 @@ describe('Map Click Elevation Test', function () {
 		// Press the button
 		cy.get('button[type="submit"]').click(); // Replace with your button selector
 
-		// Assert that the elevation text is displayed and not loading
+		// Assert that the correct elevation text for the via the form specified location is displayed and not loading
 		cy.get('[data-cy="elevation"]')
 			.should('not.contain', 'Loading...')
 			.and('have.text', 'Elevation: 136 meters');
