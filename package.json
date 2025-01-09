@@ -12,7 +12,9 @@
 		"type-check:watch": "tsc --build --watch",
 		"format": "prettier --write .",
 		"cy:open": "cypress open",
+		"cy:open:update:snapshots": "cypress open --env updateSnapshots=true",
 		"test:e2e": "cypress run --browser chrome",
+		"test:e2e:update:snapshots": "cypress run --browser chrome --env updateSnapshots=true",
 		"test:unit": "vitest",
 		"eslint:inspect": "eslint --inspect-config"
 	},
@@ -44,6 +46,7 @@
 		"cssnano": "^7.0.6",
 		"cypress": "^13.17.0",
 		"cypress-dotenv": "^3.0.1",
+		"cypress-image-snapshot": "^4.0.1",
 		"eslint": "^9.17.0",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-chai-friendly": "^1.0.1",

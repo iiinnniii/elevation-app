@@ -1,5 +1,6 @@
 import { defineConfig } from 'cypress';
 import dotenv from 'dotenv';
+import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
 
 dotenv.config({ path: './.env.e2e-test.local' });
 dotenv.config({ path: './.env.e2e-test.ci' });
@@ -18,6 +19,7 @@ export default defineConfig({
 					return null;
 				},
 			});
+			addMatchImageSnapshotPlugin(on, config);
 		},
 	},
 });

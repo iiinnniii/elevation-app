@@ -9,7 +9,7 @@ export const ActionButton = (props: React.ComponentProps<'button'>) => {
 		<button
 			{...props}
 			className={twMerge(
-				'rounded-full border border-action bg-action px-5 text-white hover:border-action-darkened hover:bg-action-darkened',
+				'rounded-full border border-action bg-action px-5 text-white hover:border-action-darkened hover:bg-action-darkened focus-visible:outline-0',
 				props.className,
 			)}
 		>

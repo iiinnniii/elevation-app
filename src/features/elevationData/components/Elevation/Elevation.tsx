@@ -13,7 +13,7 @@ export const Elevation = ({ location, elevation }: ElevationProps) => {
 				<div className='mt-2'>
 					<p>Latitude: {location.lat}</p>
 					<p>Longitude: {location.lng}</p>
-					<p>
+					<p data-cy='elevation'>
 						{`Elevation: ${elevation !== null ? `${elevation} meters` : 'Loading...'}`}
 					</p>
 				</div>

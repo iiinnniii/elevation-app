@@ -195,6 +195,10 @@ This might be uselful to debug something locally exactly as it happens in CI/CD 
 7. First WSL terminal: `docker run -t --rm --network=elevation-app-network --name=elevation-app-server <image-id-from-step-2>`. Note: In CI/CD this has to be detached, but in development it makes sense to be able to see output.
 8. Second WSL terminal: `docker run -t --rm --network=elevation-app-network <image-id-from-step-4> pnpm run test:e2e`
 
+### Remarks
+
+For some reason (possibly a bug), the snapshots for the E2E tests need to be updated separately for the `cy:open` and `test:e2e` npm scripts. That is why I introduced two npm scripts to udpate the snapshots (`cy:open:update:snapshots` and `test:e2e:update:snapshots`).
+
 ## Debugging
 
 To debug your application, utilize the launch configurations provided in the .vscode/launch.json file. These configurations are pre-set to help you start debugging efficiently within your development environment.

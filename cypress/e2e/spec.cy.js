@@ -1,8 +1,3 @@
-// import dotenv from 'dotenv';
-
-// dotenv.config({ path: './.env.e2e-test.local' });
-// dotenv.config({ path: './.env.e2e-test.ci' });
-
 const remoteURL = `http://${Cypress.env('REMOTE_URL')}:${Cypress.env('PORT')}/`; // "localhost" | "host.docker.internal" | "elevation-app-server"
 
 describe('Map Click Elevation Test', function () {
@@ -13,27 +8,71 @@ describe('Map Click Elevation Test', function () {
 		cy.visit(remoteURL);
 	});
 
+	it('should initially fetch elevation for default location', function () {
+		// Avoid too many requests error
+		// eslint-disable-next-line cypress/no-unnecessary-waiting
+		cy.wait(2000);
+
+		// Assert that the correct elevation text is displayed and not loading
+		cy.get('[data-cy="elevation"]')
+			.should('not.contain', 'Loading...')
+			.and('have.text', 'Elevation: 89.10835266113281 meters');
+	});
+
 	it('should update elevation when clicking on the map', function () {
-		// Wait for the elevation data to be fetched and displayed
-		cy.intercept('/api/v1/test-dataset*').as('fetchElevation');
-		// cy.wait('@fetchElevation');
+		// Avoid too many requests error
+		// eslint-disable-next-line cypress/no-unnecessary-waiting
+		cy.wait(2000);
 
 		// Click on the map at specific coordinates
 		cy.get('.leaflet-container').click(300, 200); // Adjust coordinates as needed
 
-		cy.log('Waiting for fetchElevation request');
-		cy.wait('@fetchElevation', { timeout: 10000 }).then((interception) => {
-			cy.log('Request intercepted: ', interception);
-		});
-
-		// Assert that the elevation text is displayed and not loading
-		cy.contains('Elevation:')
+		// Assert that the correct elevation text for the new location is displayed and not loading
+		cy.get('[data-cy="elevation"]')
+			.should('not.contain', 'Elevation: 89.10835266113281 meters')
 			.should('not.contain', 'Loading...')
-			.and('contain', 'meters');
+			.and('have.text', 'Elevation: 89.85796356201172 meters');
+	});
 
-		// Log: Final check
-		cy.get('p').then((p) => {
-			cy.log('Paragraph text after fetch:', p.text());
+	it('should display map', function () {
+		// Avoid too many requests error (map fetches from other url)
+		// eslint-disable-next-line cypress/no-unnecessary-waiting
+		cy.wait(2000);
+
+		// Intercept request
+		cy.intercept('GET', '/api/v1/test-dataset*', (req) => {
+			req.reply({
+				statusCode: 200,
+				body: { results: [{ elevation: 300 }] },
+			});
+		}).as('fetchElevation');
+
+		// Wait for the UI to update (might be slow depending on the environment)
+		// eslint-disable-next-line cypress/no-unnecessary-waiting
+		cy.wait(5000);
+
+		// Take a screenshot and compare with the expected screenshot
+		cy.get('.leaflet-container').matchImageSnapshot({
+			failureThreshold: 0.02, // Allow 2% difference
+			failureThresholdType: 'percent', // Specify the threshold type as percentage
 		});
+	});
+
+	it('should update elevation via input form', function () {
+		// Avoid too many requests error
+		// eslint-disable-next-line cypress/no-unnecessary-waiting
+		cy.wait(2000);
+
+		// Enter values into the inputs
+		cy.get('input[name="latitude"]').type('40'); // Replace with your input selector
+		cy.get('input[name="longitude"]').type('4'); // Replace with your input selector
+
+		// Press the button
+		cy.get('button[type="submit"]').click(); // Replace with your button selector
+
+		// Assert that the correct elevation text for the via the form specified location is displayed and not loading
+		cy.get('[data-cy="elevation"]')
+			.should('not.contain', 'Loading...')
+			.and('have.text', 'Elevation: 136 meters');
 	});
 });
