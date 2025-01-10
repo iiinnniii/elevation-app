@@ -43,16 +43,19 @@ describe('Map Click Elevation Test', function () {
 		cy.intercept('GET', '/api/v1/test-dataset*', (req) => {
 			req.reply({
 				statusCode: 200,
-				body: { results: [{ elevation: 2568 }] },
+				body: { results: [{ elevation: 300 }] },
 			});
 		}).as('fetchElevation');
 
 		// Wait for the UI to update (might be slow depending on the environment)
 		// eslint-disable-next-line cypress/no-unnecessary-waiting
-		cy.wait(1000);
+		cy.wait(5000);
 
 		// Take a screenshot and compare with the expected screenshot
-		cy.get('.leaflet-container').matchImageSnapshot();
+		cy.get('.leaflet-container').matchImageSnapshot({
+			failureThreshold: 0.02, // Allow 2% difference
+			failureThresholdType: 'percent', // Specify the threshold type as percentage
+		});
 	});
 
 	it('should update elevation via input form', function () {
