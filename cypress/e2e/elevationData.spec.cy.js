@@ -14,9 +14,11 @@ describe('Map Click Elevation Test', function () {
 		cy.wait(2000);
 
 		// Assert that the correct elevation text is displayed and not loading
-		cy.get('[data-cy="elevation"]')
-			.should('not.contain', 'Loading...')
-			.and('have.text', 'Elevation: 89.10835266113281 meters');
+		cy.get('[data-cy="elevation"]').should('not.contain', 'Loading...');
+		cy.get('[data-cy="elevation"]').should(
+			'have.text',
+			'Elevation: 89.10835266113281 meters',
+		);
 	});
 
 	it('should update elevation when clicking on the map', function () {
@@ -28,10 +30,15 @@ describe('Map Click Elevation Test', function () {
 		cy.get('.leaflet-container').click(300, 200); // Adjust coordinates as needed
 
 		// Assert that the correct elevation text for the new location is displayed and not loading
-		cy.get('[data-cy="elevation"]')
-			.should('not.contain', 'Elevation: 89.10835266113281 meters')
-			.should('not.contain', 'Loading...')
-			.and('have.text', 'Elevation: 89.85796356201172 meters');
+		cy.get('[data-cy="elevation"]').should(
+			'not.contain',
+			'Elevation: 89.10835266113281 meters',
+		);
+		cy.get('[data-cy="elevation"]').should('not.contain', 'Loading...');
+		cy.get('[data-cy="elevation"]').should(
+			'have.text',
+			'Elevation: 89.85796356201172 meters',
+		);
 	});
 
 	it('should display map', function () {
@@ -71,8 +78,14 @@ describe('Map Click Elevation Test', function () {
 		cy.get('button[type="submit"]').click(); // Replace with your button selector
 
 		// Assert that the correct elevation text for the via the form specified location is displayed and not loading
-		cy.get('[data-cy="elevation"]')
-			.should('not.contain', 'Loading...')
-			.and('have.text', 'Elevation: 136 meters');
+		cy.get('[data-cy="elevation"]').should(
+			'not.contain',
+			'Elevation: 89.10835266113281 meters',
+		);
+		cy.get('[data-cy="elevation"]').should('not.contain', 'Loading...');
+		cy.get('[data-cy="elevation"]').should(
+			'have.text',
+			'Elevation: 136 meters',
+		);
 	});
 });
