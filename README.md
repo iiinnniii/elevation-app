@@ -162,7 +162,7 @@ This can be helpful for debugging why tests are failing in the CI/CD pipeline on
 1. First WSL terminal: `docker build --target production -t elevation-app .`
 2. First WSL terminal: `docker run -it --rm -p 80:80 <image-id>`
 3. Second WSL terminal: `docker ps`
-4. Second WSL terminal: `docker inspect <container_id_or_name> | grep "IPAddress"`
+4. Second WSL terminal: `docker inspect --format='{{.NetworkSettings.IPAddress}}' <container_id_or_name>`
 5. Specify `REMOTE_URL="<network-ip>"` within `.env.e2e-test.local`. For `<network-ip>` use the Network IP address from the last step.
 6. Specify `PORT="80"` within `.env.e2e-test.local`
 7. Dev Container bash terminal: Run the E2E test via `pnpm run test:e2e` or `pnpm run cy:open`
