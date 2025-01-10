@@ -205,6 +205,9 @@ export default tseslint.config(
 				...globals.node,
 			},
 		},
+		rules: {
+			'cypress/require-data-selectors': 'warn',
+		},
 	},
 	// Config for .json files
 	{
