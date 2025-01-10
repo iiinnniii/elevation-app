@@ -112,7 +112,7 @@ e2e-test-job:
   artifacts:
     paths:
       - cypress/screenshots/
-      - cypress/snapshots/
+      - cypress/snapshots-after/
       - cypress/videos/
     when: always
   script:
