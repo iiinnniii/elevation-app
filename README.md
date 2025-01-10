@@ -128,15 +128,17 @@ Cypress is used for end-to-end (E2E) testing.
 
 Please note, hot reloading with Cypress is only supported in WSL2 on Windows. Therefore, it is recommended to use WSL.
 
+I you prefer to use other network topologies then the ones used below, go for it, there are multiple way to do these things from a network perspective.
+
 ### Run E2E Tests locally
 
-#### Running the tests from within the Dev Container against the App running within the Dev Container
+#### Running the tests as well as the app witihn the Dev Container
 
 Generally this will be the approach you will use most often during development.
 
 1. Open two `bash` terminals within Visual Studio Code wich is running the Dev Container
-2. First terminal: `pnpm run dev --host 0.0.0.0`
-3. Specify `REMOTE_URL="<network-ip>"` within `.env.e2e-test.local`. For `<network-ip>` use the Network IP address which Vite does show at step 2. For example: `REMOTE_URL="172.17.0.2"`
+2. First terminal: `pnpm run dev`
+3. Specify `REMOTE_URL="localhost"` within `.env.e2e-test.local`
 4. Specify `PORT="5173"` within `.env.e2e-test.local`
 5. Second terminal: Run the E2E test via `pnpm run test:e2e` or `pnpm run cy:open`
 
