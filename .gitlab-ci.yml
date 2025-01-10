@@ -132,9 +132,14 @@ e2e-test-job:
     - TEST_EXIT_CODE=$(docker inspect elevation-app-tester --format='{{.State.ExitCode}}')
     - echo $TEST_EXIT_CODE
     - mkdir -p cypress/screenshots cypress/videos cypress/snapshots-after/snapshots
-    - docker cp elevation-app-tester:/usr/src/app/cypress/screenshots/. ./cypress/screenshots
-    - docker cp elevation-app-tester:/usr/src/app/cypress/videos/. ./cypress/videos
-    - docker cp elevation-app-tester:/usr/src/app/cypress/snapshots/. ./cypress/snapshots-after/snapshots
+    - echo "Ensuring videos and other assets are only copied for failing tests, and not for successful ones."
+    - if [ "$TEST_EXIT_CODE" -ne 0 ]; then
+      docker cp elevation-app-tester:/usr/src/app/cypress/screenshots/. ./cypress/screenshots
+      docker cp elevation-app-tester:/usr/src/app/cypress/videos/. ./cypress/videos
+      docker cp elevation-app-tester:/usr/src/app/cypress/snapshots/. ./cypress/snapshots-after/snapshots
+      else
+      echo "Tests passed. Skipping video copy.";
+      fi
     - docker stop elevation-app-server
     - docker rm elevation-app-server
     - docker rm elevation-app-tester
