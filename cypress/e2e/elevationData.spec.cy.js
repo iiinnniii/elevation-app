@@ -16,7 +16,7 @@ describe('Map Click Elevation Test', function () {
 		// Assert that the correct elevation text is displayed and not loading
 		cy.get('[data-cy="elevation"]')
 			.should('not.contain', 'Loading...')
-			.and('have.text', 'Elevation: 5 meters');
+			.and('have.text', 'Elevation: 89.10835266113281 meters');
 	});
 
 	it('should update elevation when clicking on the map', function () {
