@@ -109,6 +109,12 @@ e2e-test-job:
     DOCKER_TLS_CERTDIR: '/certs'
   services:
     - docker:24.0.7-dind
+  artifacts:
+    paths:
+      - cypress/screenshots
+      - cypress/snapshots-after
+      - cypress/videos
+    when: always
   script:
     - docker load -i elevation-app.tar
     - docker image ls
@@ -121,8 +127,27 @@ e2e-test-job:
     - echo "CI_COMMIT_SHA ${CI_COMMIT_SHA}"
     - docker build --target development -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e .
     - docker network create elevation-app-network
-    - docker run -d --rm --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
-    - docker run -t --rm --network=elevation-app-network ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e pnpm run test:e2e
+    - docker run -d --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
+    - docker run -t --network=elevation-app-network --name=elevation-app-tester ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e pnpm run test:e2e || true
+    - TEST_EXIT_CODE=$(docker inspect elevation-app-tester --format='{{.State.ExitCode}}')
+    - echo $TEST_EXIT_CODE
+    - mkdir -p cypress/screenshots cypress/videos cypress/snapshots-after/snapshots
+    - echo "Ensuring videos and other assets are only copied for failing tests, and not for successful ones."
+    - |
+      if [ "$TEST_EXIT_CODE" -ne 0 ]; then
+        docker cp elevation-app-tester:/usr/src/app/cypress/screenshots/. ./cypress/screenshots
+        docker cp elevation-app-tester:/usr/src/app/cypress/videos/. ./cypress/videos
+        docker cp elevation-app-tester:/usr/src/app/cypress/snapshots/. ./cypress/snapshots-after/snapshots
+      else
+        echo "Tests passed. Skipping video copy.";
+      fi
+    - docker stop elevation-app-server
+    - docker rm elevation-app-server
+    - docker rm elevation-app-tester
+    - ls -la cypress/screenshots/
+    - ls -la cypress/snapshots/
+    - ls -la cypress/videos/
+    - exit ${TEST_EXIT_CODE:-1}
 
 push-docker-image-job:
   stage: push-docker-image

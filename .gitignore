@@ -32,3 +32,6 @@ dist-ssr
 
 # Cypress
 cypress/snapshots/__diff_output__
+cypress/screenshots
+cypress/videos
+cypress/downloads

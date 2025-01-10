@@ -21,5 +21,8 @@ export default defineConfig({
 			});
 			addMatchImageSnapshotPlugin(on, config);
 		},
+		video: true,
+		videoCompression: false,
+		videoUploadOnPasses: false,
 	},
 });
