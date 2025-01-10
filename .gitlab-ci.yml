@@ -129,7 +129,7 @@ e2e-test-job:
     - docker network create elevation-app-network
     - docker run -d --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
     - docker run -t --network=elevation-app-network --name=elevation-app-tester ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e pnpm run test:e2e || true
-    - TEST_EXIT_CODE=$(docker inspect elevation-app-tester --format='{{.State.ExitCode}}')
+    - TEST_EXIT_CODE=$(docker inspect --format='{{.State.ExitCode}}' elevation-app-tester)
     - echo $TEST_EXIT_CODE
     - mkdir -p cypress/screenshots cypress/videos cypress/snapshots-after/snapshots
     - echo "Ensuring videos and other assets are only copied for failing tests, and not for successful ones."
