@@ -111,9 +111,9 @@ e2e-test-job:
     - docker:24.0.7-dind
   artifacts:
     paths:
-      - cypress/screenshots/
-      - cypress/snapshots-after/
-      - cypress/videos/
+      - cypress/screenshots
+      - cypress/snapshots-after
+      - cypress/videos
     when: always
   script:
     - docker load -i elevation-app.tar
@@ -132,7 +132,7 @@ e2e-test-job:
     - echo $TEST_EXIT_CODE
     - mkdir -p cypress/screenshots cypress/snapshots-after cypress/videos
     - docker cp elevation-app-tester:/usr/src/app/cypress/screenshots/. ./cypress/screenshots
-    - docker cp elevation-app-tester:/usr/src/app/cypress/snapshots/ ./cypress/snapshots-after
+    - docker cp elevation-app-tester:/usr/src/app/cypress/snapshots ./cypress/snapshots-after
     - docker cp elevation-app-tester:/usr/src/app/cypress/videos/. ./cypress/videos
     - docker stop elevation-app-server
     - docker rm elevation-app-server
