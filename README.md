@@ -8,7 +8,7 @@ This project was created via `npm create vite@latest . -- --template react-ts`
 
 **IMPORTANT:** Only commit Unix-style line endings!!!
 
-During the installation of Git select
+During the installation of `git` select
 
 > Checkout as-is, commit Unix-style line endings
 
@@ -18,7 +18,9 @@ or configure it later via
 git config --global core.autocrlf input
 ```
 
-if Git is already installed.
+if `git` is already installed.
+
+If you develop within a Dev Container using the provided Dev Container config, then this step is unnecessary because the Dev Container automatically sets this configuration when it starts.
 
 ## Dependencies
 

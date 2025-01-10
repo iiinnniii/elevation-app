@@ -52,5 +52,5 @@
 	],
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "devcontainer"
-	"postStartCommand": "pnpm install && ([ -f /mnt/gpg_files/encrypted_secreet_gpg_key.asc ] && cp /mnt/gpg_files/encrypted_secreet_gpg_key.asc /root && echo \"pinentry-program /usr/bin/pinentry-x11\" >> ~/.gnupg/gpg-agent.conf && gpgconf --kill gpg-agent && rm -f ~/.gnupg/S.gpg-agent* && gpg-connect-agent reloadagent /bye && gpg --import /root/encrypted_secreet_gpg_key.asc || true) && ([ -f /mnt/ca_certificates/rootCA.crt ] && cp /mnt/ca_certificates/rootCA.crt /usr/local/share/ca-certificates && update-ca-certificates || true) && pnpm outdated || true"
+	"postStartCommand": "git config --global core.autocrlf input && pnpm install && ([ -f /mnt/gpg_files/encrypted_secreet_gpg_key.asc ] && cp /mnt/gpg_files/encrypted_secreet_gpg_key.asc /root && echo \"pinentry-program /usr/bin/pinentry-x11\" >> ~/.gnupg/gpg-agent.conf && gpgconf --kill gpg-agent && rm -f ~/.gnupg/S.gpg-agent* && gpg-connect-agent reloadagent /bye && gpg --import /root/encrypted_secreet_gpg_key.asc || true) && ([ -f /mnt/ca_certificates/rootCA.crt ] && cp /mnt/ca_certificates/rootCA.crt /usr/local/share/ca-certificates && update-ca-certificates || true) && pnpm outdated || true"
 }
