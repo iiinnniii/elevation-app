@@ -32,6 +32,7 @@ export const LocationForm = ({ onSubmit }: LocationFormProps) => {
 				onChange={(e: ChangeEvent<HTMLInputElement>) => setLat(e.target.value)}
 				required
 				className='ml-2'
+				data-cy='elevationData-LocationForm-Input-latitude'
 			/>
 			<label htmlFor='longitude' className='ml-2'>
 				Longitude:
@@ -43,8 +44,13 @@ export const LocationForm = ({ onSubmit }: LocationFormProps) => {
 				onChange={(e: ChangeEvent<HTMLInputElement>) => setLng(e.target.value)}
 				required
 				className='ml-2'
+				data-cy='elevationData-LocationForm-Input-longitude'
 			/>
-			<ActionButton type='submit' className='ml-2'>
+			<ActionButton
+				type='submit'
+				className='ml-2'
+				data-cy='elevationData-LocationForm-ActionButton-submit'
+			>
 				Get Elevation
 			</ActionButton>
 		</form>

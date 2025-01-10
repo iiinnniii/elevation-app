@@ -27,6 +27,7 @@ describe('Map Click Elevation Test', function () {
 		cy.wait(2000);
 
 		// Click on the map at specific coordinates
+		// eslint-disable-next-line cypress/require-data-selectors
 		cy.get('.leaflet-container').click(300, 200); // Adjust coordinates as needed
 
 		// Assert that the correct elevation text for the new location is displayed and not loading
@@ -59,6 +60,7 @@ describe('Map Click Elevation Test', function () {
 		cy.wait(5000);
 
 		// Take a screenshot and compare with the expected screenshot
+		// eslint-disable-next-line cypress/require-data-selectors
 		cy.get('.leaflet-container').matchImageSnapshot({
 			failureThreshold: 0.02, // Allow 2% difference
 			failureThresholdType: 'percent', // Specify the threshold type as percentage
@@ -71,11 +73,13 @@ describe('Map Click Elevation Test', function () {
 		cy.wait(2000);
 
 		// Enter values into the inputs
-		cy.get('input[name="latitude"]').type('40'); // Replace with your input selector
-		cy.get('input[name="longitude"]').type('4'); // Replace with your input selector
+		cy.get('[data-cy="elevationData-LocationForm-Input-latitude"]').type('40'); // Replace with your input selector
+		cy.get('[data-cy="elevationData-LocationForm-Input-longitude"]').type('4'); // Replace with your input selector
 
 		// Press the button
-		cy.get('button[type="submit"]').click(); // Replace with your button selector
+		cy.get(
+			'[data-cy="elevationData-LocationForm-ActionButton-submit"]',
+		).click(); // Replace with your button selector
 
 		// Assert that the correct elevation text for the via the form specified location is displayed and not loading
 		cy.get('[data-cy="elevation"]').should(
