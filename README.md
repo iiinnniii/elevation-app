@@ -4,6 +4,10 @@
 
 This project was created via `npm create vite@latest . -- --template react-ts`
 
+## Recommended IDE
+
+The recommended IDE for this project is Visual Studio Code.
+
 ## Version Control
 
 **IMPORTANT:** Only commit Unix-style line endings!!!
