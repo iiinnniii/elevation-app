@@ -26,6 +26,12 @@ RUN actual_uid=$(id -u node) && \
 # Change ownership of the working directory to the node user RUN chown -R node:node /usr/src/app
 RUN chown -R node:node .
 
+# Install sudo package
+RUN apt-get install -y sudo 
+
+# Allow passwordless sudo for node user 
+RUN echo "node ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
 # Switch to the node user
 # This ensures that files created in the bind mount are not owned by root on the host OS
 USER node
