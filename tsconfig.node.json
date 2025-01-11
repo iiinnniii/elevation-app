@@ -23,6 +23,8 @@
 	},
 	"include": [
 		"vite.config.ts",
-		"vitest.config.ts"
+		"vitest.config.ts",
+		"cypress.config.ts",
+		"cypress/e2e"
 	]
 }

@@ -1,5 +1,8 @@
 {
 	"files": [],
+	"compilerOptions": {
+		"module": "ESNext" // Required to fix a bug in Cypress: The module property is mandatory for Cypress in tsconfig.json, even though it's not used for anything else.
+	},
 	"references": [
 		{
 			"path": "./tsconfig.app.json"

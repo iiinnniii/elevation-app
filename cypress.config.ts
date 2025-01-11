@@ -23,6 +23,5 @@ export default defineConfig({
 		},
 		video: true,
 		videoCompression: false,
-		videoUploadOnPasses: false,
 	},
 });
