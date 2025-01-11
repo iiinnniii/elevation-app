@@ -186,6 +186,12 @@ This approach may not be frequently used, but it's important to document it for 
 7. First WSL terminal: `docker run -t --rm --network=elevation-app-network --name=elevation-app-server <image-id-from-step-2> pnpm run dev --host 0.0.0.0`. Note: In CI/CD this has to be detached, but in development it makes sense to be able to see output.
 8. Second WSL terminal: `docker run -t --rm --network=elevation-app-network <image-id-from-step-4> pnpm run test:e2e`
 
+To access the server via your browser, you will need to configure a port mapping.
+
+```
+docker run -p 5173:5173 -t --rm --network=elevation-app-network --name=elevation-app-server <image-id-from-step-2> pnpm run dev --host 0.0.0.0
+```
+
 ###### Production build
 
 This might be uselful to debug something locally exactly as it happens in CI/CD production branch.
@@ -198,6 +204,12 @@ This might be uselful to debug something locally exactly as it happens in CI/CD 
 6. Second WSL terminal: `docker build --target development -t elevation-app-e2e-test .`
 7. First WSL terminal: `docker run -t --rm --network=elevation-app-network --name=elevation-app-server <image-id-from-step-2>`. Note: In CI/CD this has to be detached, but in development it makes sense to be able to see output.
 8. Second WSL terminal: `docker run -t --rm --network=elevation-app-network <image-id-from-step-4> pnpm run test:e2e`
+
+To access the server via your browser, you will need to configure the following port mapping.
+
+```
+docker run -p 80:80 -t --rm --network=elevation-app-network --name=elevation-app-server <image-id-from-step-2>
+```
 
 ### Remarks
 
