@@ -48,6 +48,9 @@ importers:
       '@stylistic/eslint-plugin-js':
         specifier: ^2.12.1
         version: 2.12.1(eslint@9.17.0(jiti@1.21.7))
+      '@types/cypress-image-snapshot':
+        specifier: ^3.1.9
+        version: 3.1.9
       '@types/jsdom':
         specifier: ^21.1.7
         version: 21.1.7
@@ -951,6 +954,9 @@ packages:
 
   '@types/babel__traverse@7.20.6':
     resolution: {integrity: sha512-r1bzfrm0tomOI8g1SzvCaQHo6Lcv6zu0EA+W2kHrt8dyrHQxGzBBL4kdkzIS+jBMV+EYcMAEAqXqYaLJq5rOZg==}
+
+  '@types/cypress-image-snapshot@3.1.9':
+    resolution: {integrity: sha512-vcFgB8AfuM0dtupCHAGgapUbjRNWmMDtpzzpXz5gexWOHW4y/n10XRi5/y5Xpi0Ztku+X4dnRVMqQa5IDcy3Ig==}
 
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
@@ -5759,6 +5765,8 @@ snapshots:
   '@types/babel__traverse@7.20.6':
     dependencies:
       '@babel/types': 7.26.3
+
+  '@types/cypress-image-snapshot@3.1.9': {}
 
   '@types/estree@1.0.6': {}
 
