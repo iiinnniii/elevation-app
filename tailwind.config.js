@@ -3,11 +3,9 @@ export default {
 	content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
 	theme: {
 		extend: {
-			gridTemplateColumns: {
-				'13': 'repeat(13, minmax(0, 1fr))',
-			},
-			borderWidth: {
-				'1': '1px',
+			colors: {
+				action: '#0ea5e9',
+				'action-darkened': '#0369a1',
 			},
 		},
 	},
