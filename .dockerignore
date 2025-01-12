@@ -15,6 +15,7 @@
 **/docker-compose*
 **/compose*
 **/Dockerfile*
+**/.pnpm-store
 **/node_modules
 **/npm-debug.log
 **/obj

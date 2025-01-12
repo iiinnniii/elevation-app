@@ -1,93 +1,183 @@
 stages:
   - install
-  - type-check
-  - lint
-  - test
   - build
-  - e2e
-  - package
+  - lint
+  - test:unit
+  - build-docker-image
+  - test:e2e
+  - push-docker-image
+
+.cache: &cache
+  key:
+    files:
+      - pnpm-lock.yaml
+  paths:
+    - node_modules
+    - .pnpm-store
+    - cache/Cypress
+  policy: pull
 
 default:
-  image: cypress/browsers
-  before_script:
-    - npm install
+  image: cypress/browsers:node-22.12.0-chrome-131.0.6778.139-1-ff-133.0.3-edge-131.0.2903.99-1
 
 variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
+
+.install_pnpm:
+  &install_pnpm # Define where pnpm should be installed. The install script below respects this environment variable.
+  - export PNPM_HOME="$(pwd)/.pnpm-store"
+  # Add pnpm to the PATH
+  - export PATH="$PNPM_HOME:$PATH"
+  # Install pnpm
+  - wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
+  # Use the `which npm` command to find the npm path and disable it
+  - mv "$(which npm)" "$(which npm)-disabled"
 
 install-job:
   stage: install
   tags:
     - elevation-app
   cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - node_modules
-      - cache/Cypress
+    <<: *cache
     policy: pull-push
+  before_script:
+    - *install_pnpm
   script:
-    - npm install
+    - pnpm install --frozen-lockfile
 
-type-check-job:
-  stage: type-check
+# Note: The build job also performs type-checking
+build-job:
+  stage: build
   tags:
     - elevation-app
   cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - node_modules
-      - cache/Cypress
-    policy: pull
+    <<: *cache
+  before_script:
+    - *install_pnpm
   script:
-    - npm run type-check
+    - pnpm run build
 
 eslint-job:
   stage: lint
   tags:
     - elevation-app
   cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - node_modules
-      - cache/Cypress
+    <<: *cache
     policy: pull
+  before_script:
+    - *install_pnpm
   script:
-    - npm run lint
+    - pnpm run lint
 
-build-job:
-  stage: build
+unit-test-job:
+  stage: test:unit
   tags:
     - elevation-app
   cache:
-    key:
-      files:
-        - package-lock.json
-    paths:
-      - node_modules
-      - cache/Cypress
+    <<: *cache
     policy: pull
+  before_script:
+    - *install_pnpm
   script:
-    - npm run build
+    - pnpm run test:unit
 
-# Better would be to test the actually prod docker image which then gets also pushed into the registry. Since it is not necessary for this demo I excluded this code.
+build-docker-image-job:
+  stage: build-docker-image
+  tags:
+    - elevation-app
+  image: docker:24.0.7
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: '/certs'
+  services:
+    - docker:24.0.7-dind
+  artifacts:
+    paths:
+      - elevation-app.tar
+  script:
+    - docker info
+    - docker build --target production -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} .
+    - docker save -o elevation-app.tar ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
+
 e2e-test-job:
-  stage: e2e
+  stage: test:e2e
   tags:
     - elevation-app
-  cache:
-    key:
-      files:
-        - package-lock.json
+  image: docker:24.0.7
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: '/certs'
+  services:
+    - docker:24.0.7-dind
+  artifacts:
     paths:
-      - node_modules
-      - cache/Cypress
-    policy: pull
+      - cypress/screenshots
+      - cypress/snapshots-after
+      - cypress/videos
+    when: always
   script:
-    - npm run dev &
-    - npm run test
+    - docker load -i elevation-app.tar
+    - docker image ls
+    - rm elevation-app.tar
+    - touch .env.e2e-test.ci
+    - echo REMOTE_URL="elevation-app-server" >> .env.e2e-test.ci
+    - echo PORT="80" >> .env.e2e-test.ci
+    - cat .env.e2e-test.ci
+    - echo "CI_REGISTRY_IMAGE ${CI_REGISTRY_IMAGE}"
+    - echo "CI_COMMIT_SHA ${CI_COMMIT_SHA}"
+    - docker build --target development -t ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e .
+    - docker network create elevation-app-network
+    - docker run -d --network=elevation-app-network --name=elevation-app-server ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}
+    - docker run -t --network=elevation-app-network --name=elevation-app-tester ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}-test-e2e pnpm run test:e2e || true
+    - TEST_EXIT_CODE=$(docker inspect --format='{{.State.ExitCode}}' elevation-app-tester)
+    - echo $TEST_EXIT_CODE
+    - mkdir -p cypress/screenshots cypress/videos cypress/snapshots-after/snapshots
+    - echo "Ensuring videos and other assets are only copied for failing tests, and not for successful ones."
+    - |
+      if [ "$TEST_EXIT_CODE" -ne 0 ]; then
+        docker cp elevation-app-tester:/usr/src/app/cypress/screenshots/. ./cypress/screenshots
+        docker cp elevation-app-tester:/usr/src/app/cypress/videos/. ./cypress/videos
+        docker cp elevation-app-tester:/usr/src/app/cypress/snapshots/. ./cypress/snapshots-after/snapshots
+      else
+        echo "Tests passed. Skipping video copy.";
+      fi
+    - docker stop elevation-app-server
+    - docker rm elevation-app-server
+    - docker rm elevation-app-tester
+    - ls -la cypress/screenshots/
+    - ls -la cypress/snapshots/
+    - ls -la cypress/videos/
+    - exit ${TEST_EXIT_CODE:-1}
+
+push-docker-image-job:
+  stage: push-docker-image
+  tags:
+    - elevation-app
+  image: docker:24.0.7
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: '/certs'
+    ROOT_CA_CERTIFICATE: '${CA_CERTIFICATE}' # Workaround for Variables from 'Settings > CI/CD > Variables' are not expanded within services:[]:command https://gitlab.com/gitlab-org/gitlab-runner/-/issues/3808
+  services:
+    - name: docker:24.0.7-dind
+      command:
+        - /bin/sh
+        - -c
+        - echo "$ROOT_CA_CERTIFICATE" > /usr/local/share/ca-certificates/ca.crt && update-ca-certificates && dockerd-entrypoint.sh || exit
+  rules:
+    - if: '$CI_COMMIT_REF_PROTECTED == "true"'
+  script:
+    - docker load -i elevation-app.tar
+    - docker image ls
+    - echo "IMPORTANT! The following docker login command will cause a WARNING, but this warning is harmless, because the container created from the docker executor gets removed after the pipeline is finished and /root/.docker/config.json does not end up in the image which gets created via docker build in this job."
+    - echo "${CONTAINER_REGISTRY_PASSWORD:?}" | docker login "${CONTAINER_REGISTRY_SERVER:?}" --password-stdin --username "${CONTAINER_REGISTRY_USERNAME:?}"
+    - >
+      if [ "${CI_COMMIT_BRANCH}" == "production" ]; then
+        docker tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} ${CI_REGISTRY_IMAGE}:latest
+        docker image ls
+        docker push ${CI_REGISTRY_IMAGE}:latest
+      else
+        docker tag ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA} ${CI_REGISTRY_IMAGE}:${CI_COMMIT_BRANCH}-latest
+        docker image ls
+        docker push ${CI_REGISTRY_IMAGE}:${CI_COMMIT_BRANCH}-latest
+      fi
