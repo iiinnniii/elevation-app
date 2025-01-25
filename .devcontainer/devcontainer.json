@@ -12,11 +12,7 @@
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [
-		5173
-	],
-	// Uncomment the next line to run commands after the container is created.
-	// "postCreateCommand": "cat /etc/os-release",
+	"forwardPorts": [5173],
 	// Configure tool-specific properties.
 	// "customizations": {},
 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
@@ -40,8 +36,8 @@
 	},
 	"mounts": [
 		{
-			"source": "gpg_files",
-			"target": "/mnt/gpg_files",
+			"source": "ssh_keys",
+			"target": "/mnt/ssh_keys",
 			"type": "volume"
 		},
 		{
@@ -50,7 +46,5 @@
 			"type": "volume"
 		}
 	],
-	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "devcontainer"
-	"postStartCommand": "git config --global core.autocrlf input && pnpm install && ([ -f /mnt/gpg_files/encrypted_secreet_gpg_key.asc ] && cp /mnt/gpg_files/encrypted_secreet_gpg_key.asc /root && echo \"pinentry-program /usr/bin/pinentry-x11\" >> ~/.gnupg/gpg-agent.conf && gpgconf --kill gpg-agent && rm -f ~/.gnupg/S.gpg-agent* && gpg-connect-agent reloadagent /bye && gpg --import /root/encrypted_secreet_gpg_key.asc || true) && ([ -f /mnt/ca_certificates/rootCA.crt ] && sudo cp /mnt/ca_certificates/rootCA.crt /usr/local/share/ca-certificates && sudo update-ca-certificates || true) && pnpm outdated || true"
+	"postStartCommand": "pnpm run devcontainer:poststart"
 }
