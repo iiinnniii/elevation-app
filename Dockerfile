@@ -6,6 +6,9 @@ WORKDIR /usr/src/app
 # Disable npm to enforce pnpm usage for package management
 RUN mv "$(which npm)" "$(which npm)-disabled"
 
+# Install nano (this is my git core.editor)
+RUN apt-get update && apt-get install -y nano
+
 # Update package lists and install gnupg and pinentry-gtk2 in one step
 RUN apt-get update && apt-get install -y \
     gnupg \
