@@ -1,11 +1,12 @@
 import { execSync } from 'child_process';
+import fs from 'fs';
 
 // Helper function to run shell commands and log output
 function runCommand(command, successMessage, errorMessage) {
 	try {
 		execSync(command, { stdio: 'inherit' });
 		if (successMessage) {
-			console.log(successMessage);
+			logWithColor(successMessage, 'green');
 		}
 	} catch (error) {
 		switch (errorMessage) {
@@ -17,9 +18,46 @@ function runCommand(command, successMessage, errorMessage) {
 				break;
 			}
 			default: {
-				console.error(errorMessage);
+				logWithColor(errorMessage, 'red');
 				break;
 			}
+		}
+	}
+}
+
+// Function to log with color based on platform
+function logWithColor(message, color = 'default') {
+	const isWindows = process.platform === 'win32';
+
+	if (isWindows && process.env.POWERSHELL_EXECUTION_POLICY) {
+		// PowerShell: Use Write-Host with -ForegroundColor
+		const colors = {
+			red: 'Red',
+			yellow: 'Yellow',
+			green: 'Green',
+			default: '', // Default terminal color
+			reset: '',
+		};
+
+		if (colors[color]) {
+			console.log(`Write-Host '${message}' -ForegroundColor ${colors[color]}`);
+		} else {
+			console.log(`Write-Host '${message}'`);
+		}
+	} else {
+		// Unix-based (Linux/Mac): Use ANSI escape codes
+		const colorCodes = {
+			red: '\x1b[31m',
+			yellow: '\x1b[33m',
+			green: '\x1b[32m',
+			reset: '\x1b[0m',
+			default: '', // Default terminal color
+		};
+
+		if (colorCodes[color]) {
+			console.log(`${colorCodes[color]}${message}${colorCodes.reset}`);
+		} else {
+			console.log(message); // Use the default terminal color if no color is specified
 		}
 	}
 }
@@ -30,76 +68,90 @@ console.log('Starting postStart tasks...');
 runCommand(
 	'git config --global core.autocrlf input',
 	'Git config completed successfully',
-	'\x1b[31mError: Git config failed\x1b[0m',
+	'Error: Git config failed',
 );
 
 // 2. Install dependencies if `pnpm-lock.yaml` exists
-runCommand(`
-    if [ -f pnpm-lock.yaml ]; then
-        pnpm install
-        EXIT_CODE=$?
-        if [ $EXIT_CODE -eq 0 ]; then
-            echo "pnpm install was successful"
-        else
-            echo "\x1b[31mError: pnpm install failed\x1b[0m" >&2
-        fi
-    else
-        echo "\x1b[33mWarning: pnpm-lock.yaml not found, skipping pnpm install\x1b[0m"
-    fi
-`);
+const pnpmLockFile = 'pnpm-lock.yaml';
+if (fs.existsSync(pnpmLockFile)) {
+	try {
+		execSync('pnpm install', { stdio: 'inherit' });
+		logWithColor('pnpm install was successful', 'green');
+	} catch (error) {
+		logWithColor('Error: pnpm install failed', 'red');
+		logWithColor(error);
+	}
+} else {
+	logWithColor(
+		'Warning: pnpm-lock.yaml not found, skipping pnpm install',
+		'yellow',
+	);
+}
 
 // 3. Handle SSH key copy
-runCommand(`
-    if [ -f /mnt/ssh_keys/id_rsa ]; then
-        sudo cp /mnt/ssh_keys/id_rsa /root/.ssh
-        EXIT_CODE=$?
-        if [ $EXIT_CODE -eq 0 ]; then
-            echo "SSH key copied to /root/.ssh/id_rsa"
-        else
-            echo "\x1b[31mError: Failed to copy SSH key to /root/.ssh/id_rsa\x1b[0m" >&2
-        fi
-    else
-        echo "\x1b[33mWarning: SSH key not found, skipping copy\x1b[0m"
-    fi
-`);
+const sshKeyPath = '/mnt/ssh_keys/id_rsa';
+if (fs.existsSync(sshKeyPath)) {
+	try {
+		execSync(`sudo cp ${sshKeyPath} /root/.ssh`, { stdio: 'inherit' });
+		logWithColor('SSH key copied to /root/.ssh/id_rsa', 'green');
+	} catch (error) {
+		logWithColor('Error: Failed to copy SSH key to /root/.ssh/id_rsa', 'red');
+		logWithColor(error);
+	}
+} else {
+	logWithColor('Warning: SSH key not found, skipping copy', 'yellow');
+}
 
 // 4. Handle CA certificate copy
-runCommand(`
-    if [ -f /mnt/ca_certificates/rootCA.crt ]; then 
-        # Copy operation
-        sudo cp /mnt/ca_certificates/rootCA.crt /usr/local/share/ca-certificates
-        COPY_EXIT_CODE=$?
-        if [ $COPY_EXIT_CODE -eq 0 ]; then
-            echo "CA certificate copied to /usr/local/share/ca-certificates/rootCA.crt"
-        else
-            echo "\x1b[31mError: Failed to copy CA certificate to /usr/local/share/ca-certificates\x1b[0m" >&2
-        fi
-        # Update operation (only runs if copy succeeded)
-        if [ $COPY_EXIT_CODE -eq 0 ]; then 
-            sudo update-ca-certificates
-            UPDATE_EXIT_CODE=$?
-            if [ $UPDATE_EXIT_CODE -eq 0 ]; then
-                echo "CA certificate updated"
-            else
-                echo "\x1b[31mError: Failed to update CA certificates\x1b[0m" >&2
-            fi
-        else
-            echo "\x1b[33mWarning: Copy of CA certificate failed, skipping update-ca-certificates\x1b[0m"
-        fi
-    else 
-        echo "\x1b[33mWarning: CA certificate not found, skipping copy and update-ca-certificates\x1b[0m"
-    fi
-`);
+const caCertPath = '/mnt/ca_certificates/rootCA.crt';
+if (fs.existsSync(caCertPath)) {
+	try {
+		execSync(`sudo cp ${caCertPath} /usr/local/share/ca-certificates`, {
+			stdio: 'inherit',
+		});
+		logWithColor(
+			'CA certificate copied to /usr/local/share/ca-certificates/rootCA.crt',
+			'green',
+		);
+
+		try {
+			execSync('sudo update-ca-certificates', { stdio: 'inherit' });
+			logWithColor('CA certificate updated', 'green');
+		} catch (error) {
+			logWithColor('Error: Failed to update CA certificates', 'red');
+			logWithColor(error);
+		}
+	} catch (error) {
+		logWithColor(
+			'Error: Failed to copy CA certificate to /usr/local/share/ca-certificates',
+			'red',
+		);
+		logWithColor(error);
+	}
+} else {
+	logWithColor(
+		'Warning: CA certificate not found, skipping copy and update-ca-certificates',
+		'yellow',
+	);
+}
 
 // 5. Run pnpm outdated to check for outdated dependencies
-runCommand(`
-    if [ -f pnpm-lock.yaml ]; then
-        pnpm outdated
-        EXIT_CODE=$?
-        if [ $EXIT_CODE -eq 0 ]; then
-            echo "pnpm outdated completed successfully"
-        fi
-    else
-        echo "\x1b[33mWarning: pnpm-lock.yaml not found, skipping pnpm outdated\x1b[0m"
-    fi
-`);
+if (fs.existsSync(pnpmLockFile)) {
+	try {
+		execSync('pnpm outdated', { stdio: 'inherit' });
+		logWithColor('pnpm outdated completed successfully', 'green');
+	} catch (error) {
+		// If the error is due to outdated dependencies (exit code 1), treat it as a warning, not a failure
+		if (error.status === 1) {
+			// Do nothing
+			// We could also log a warning here, but I do not need that, it is already very visible, that dependencies are outdated
+		} else {
+			logWithColor('Error: pnpm outdated failed', 'red');
+		}
+	}
+} else {
+	logWithColor(
+		'Warning: pnpm-lock.yaml not found, skipping pnpm outdated',
+		'yellow',
+	);
+}
