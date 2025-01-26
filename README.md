@@ -40,6 +40,12 @@ $ pnpm --version
 9.15.3
 ```
 
+When using the provided Dev Container, the following tools must be installed on your machine.
+
+- Visual Studio Code
+- Docker Desktop
+- The `ms-vscode-remote.remote-containers` extension for Visual Studio Code
+
 ## Package management
 
 The Dockerfile is configured to enforce the use of `pnpm` by default. As a result, `npm` commands are not available to execute within the Dev Container. This configuration ensures that you cannot accidentally execute a mixture of `pnpm` and `npm` commands, which could lead to undesired behavior.
