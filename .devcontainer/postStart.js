@@ -34,11 +34,18 @@ runCommand(
 );
 
 // 2. Install dependencies if `pnpm-lock.yaml` exists
-runCommand(
-	'if [ -f pnpm-lock.yaml ]; then pnpm install; else echo "pnpm-lock.yaml not found, skipping pnpm install"; fi',
-	'pnpm install completed successfully',
-	'pnpm install failed',
-);
+runCommand(`
+	if [ -f pnpm-lock.yaml ]; then
+		pnpm install
+		if [ $? -eq 0 ]; then
+			echo "pnpm install was successful!"
+		else
+			echo "pnpm install failed."
+		fi
+	else
+		echo "pnpm-lock.yaml not found, skipping pnpm install"
+	fi
+`);
 
 // 3. Handle SSH key copy
 runCommand(`
@@ -63,4 +70,13 @@ runCommand(`
 `);
 
 // 5. Run pnpm outdated to check for outdated dependencies
-runCommand('pnpm outdated', 'pnpm outdated completed', null);
+runCommand(`
+	if [ -f pnpm-lock.yaml ]; then
+		pnpm outdated
+		if [ $? -eq 0 ]; then
+			echo "pnpm outdated completed successfully"
+		fi
+	else
+		echo "pnpm-lock.yaml not found, skipping pnpm outdated"
+	fi
+`);
