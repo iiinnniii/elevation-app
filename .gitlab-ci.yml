@@ -36,7 +36,7 @@ variables:
 install-job:
   stage: install
   tags:
-    - elevation-app
+    - ubuntu-docker
   cache:
     <<: *cache
     policy: pull-push
@@ -49,7 +49,7 @@ install-job:
 build-job:
   stage: build
   tags:
-    - elevation-app
+    - ubuntu-docker
   cache:
     <<: *cache
   before_script:
@@ -60,7 +60,7 @@ build-job:
 eslint-job:
   stage: lint
   tags:
-    - elevation-app
+    - ubuntu-docker
   cache:
     <<: *cache
     policy: pull
@@ -72,7 +72,7 @@ eslint-job:
 unit-test-job:
   stage: test:unit
   tags:
-    - elevation-app
+    - ubuntu-docker
   cache:
     <<: *cache
     policy: pull
@@ -84,7 +84,7 @@ unit-test-job:
 build-docker-image-job:
   stage: build-docker-image
   tags:
-    - elevation-app
+    - ubuntu-docker
   image: docker:24.0.7
   variables:
     DOCKER_DRIVER: overlay2
@@ -102,7 +102,7 @@ build-docker-image-job:
 e2e-test-job:
   stage: test:e2e
   tags:
-    - elevation-app
+    - ubuntu-docker
   image: docker:24.0.7
   variables:
     DOCKER_DRIVER: overlay2
@@ -152,7 +152,7 @@ e2e-test-job:
 push-docker-image-job:
   stage: push-docker-image
   tags:
-    - elevation-app
+    - ubuntu-docker
   image: docker:24.0.7
   variables:
     DOCKER_DRIVER: overlay2

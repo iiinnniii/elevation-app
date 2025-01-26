@@ -11,6 +11,7 @@
 		"type-check": "tsc --build",
 		"type-check:watch": "tsc --build --watch",
 		"format": "prettier --write .",
+		"devcontainer:poststart": "node .devcontainer/postStart.js",
 		"cy:open": "cypress open",
 		"cy:open:update:snapshots": "cypress open --env updateSnapshots=true",
 		"test:e2e": "cypress run --browser chrome",

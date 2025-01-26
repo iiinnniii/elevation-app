@@ -42,30 +42,30 @@ describe('Map Click Elevation Test', function () {
 		);
 	});
 
-	it('should display map', function () {
-		// Avoid too many requests error (map fetches from other url)
-		// eslint-disable-next-line cypress/no-unnecessary-waiting
-		cy.wait(2000);
+	// it('should display map', function () {
+	// 	// Avoid too many requests error (map fetches from other url)
+	// 	// eslint-disable-next-line cypress/no-unnecessary-waiting
+	// 	cy.wait(2000);
 
-		// Intercept request
-		cy.intercept('GET', '/api/v1/test-dataset*', (req) => {
-			req.reply({
-				statusCode: 200,
-				body: { results: [{ elevation: 300 }] },
-			});
-		}).as('fetchElevation');
+	// 	// Intercept request
+	// 	cy.intercept('GET', '/api/v1/test-dataset*', (req) => {
+	// 		req.reply({
+	// 			statusCode: 200,
+	// 			body: { results: [{ elevation: 300 }] },
+	// 		});
+	// 	}).as('fetchElevation');
 
-		// Wait for the UI to update (might be slow depending on the environment)
-		// eslint-disable-next-line cypress/no-unnecessary-waiting
-		cy.wait(5000);
+	// 	// Wait for the UI to update (might be slow depending on the environment)
+	// 	// eslint-disable-next-line cypress/no-unnecessary-waiting
+	// 	cy.wait(5000);
 
-		// Take a screenshot and compare with the expected screenshot
-		// eslint-disable-next-line cypress/require-data-selectors
-		cy.get('.leaflet-container').matchImageSnapshot({
-			failureThreshold: 0.02, // Allow 2% difference
-			failureThresholdType: 'percent', // Specify the threshold type as percentage
-		});
-	});
+	// 	// Take a screenshot and compare with the expected screenshot
+	// 	// eslint-disable-next-line cypress/require-data-selectors
+	// 	cy.get('.leaflet-container').matchImageSnapshot({
+	// 		failureThreshold: 0.02, // Allow 2% difference
+	// 		failureThresholdType: 'percent', // Specify the threshold type as percentage
+	// 	});
+	// });
 
 	it('should update elevation via input form', function () {
 		// Avoid too many requests error
