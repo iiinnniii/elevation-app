@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
     pinentry-gtk2
 
 # Configure gpg-agent to use pinentry-x11
-RUN echo "pinentry-program /usr/bin/pinentry-x11" >> ~/.gnupg/gpg-agent.conf #pinentry-gtk-2 is ok too
+RUN mkdir -p ~/.gnupg && echo "pinentry-program /usr/bin/pinentry-x11" >> ~/.gnupg/gpg-agent.conf #pinentry-gtk-2 is ok too
 
 # Catch permission problems early before switching to the node user
 # Check if the node user has the correct UID and GID
@@ -46,10 +46,12 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
 
 # Copy package files (package.json, lock files) to the container
-COPY --chown=node:node ["package.json", "package-lock.json*", "pnpm-lock.yaml", "./"]
+COPY --chown=node:node ["package.json", "package-lock.json*", "./"]
+RUN if [ -f pnpm-lock.yaml ]; then cp pnpm-lock.yaml ./; fi
+
 
 # Install project dependencies using pnpm
-RUN pnpm install
+RUN if [ -f pnpm-lock.yaml ]; then pnpm install; else echo "pnpm-lock.yaml not found, skipping pnpm install"; fi
 
 # Copy the rest of the application source code into the container
 COPY --chown=node:node . .
