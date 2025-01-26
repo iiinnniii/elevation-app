@@ -46,9 +46,7 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.bashrc" SHELL="$(which bash)" bash -
 
 # Copy package files (package.json, lock files) to the container
-COPY --chown=node:node ["package.json", "package-lock.json*", "./"]
-RUN if [ -f pnpm-lock.yaml ]; then cp pnpm-lock.yaml ./; fi
-
+COPY --chown=node:node ["package.json", "package-lock.json*", "pnpm-lock.yaml*", "./"]
 
 # Install project dependencies using pnpm
 RUN if [ -f pnpm-lock.yaml ]; then pnpm install; else echo "pnpm-lock.yaml not found, skipping pnpm install"; fi
